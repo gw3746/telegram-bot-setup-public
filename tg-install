@@ -1,0 +1,7 @@
+#!/usr/bin/env python3
+"""從尚未安裝相依的 Python 3 啟動。
+
+Bootstrap using Python 3 before project dependencies are installed."""
+from tg_install import main
+
+raise SystemExit(main())

@@ -1,0 +1,29 @@
+# 秘密與 token：一律不進版控
+.env
+.env.*
+!.env.example
+*.env
+tg_token*.txt*
+*.session
+*.session-journal
+*.session-wal
+*.session-shm
+# 本機 Telegram Desktop 與執行產物
+Telegram_DeskTop/
+__pycache__/
+.pytest_cache/
+.venv/
+.test-venv/
+.state/
+output/
+*.sqlite3*
+*.part
+*.xml
+*.bak*
+*.routes.json
+*.routes.json.lock
+*.setup.lock
+# 通用收件範例的私人檔案
+/received/
+.tg-language
+.tg-language-*

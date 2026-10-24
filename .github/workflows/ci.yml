@@ -1,0 +1,45 @@
+name: Offline tests and secret scan
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  offline-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
+        with:
+          version: "0.11.8"
+          python-version: "3.12"
+      - name: Install pinned test dependencies
+        run: |
+          uv sync --frozen --python 3.12
+          uv venv .test-venv --python 3.12
+          uv pip install --python .test-venv/bin/python -r requirements-test.txt
+      - name: Run tests with live Telegram traffic blocked
+        run: uv run --no-project --python .test-venv/bin/python python -m pytest -q tests
+
+  secret-scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Install checksum-verified Gitleaks
+        run: |
+          curl --fail --location --silent --show-error https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_x64.tar.gz --output /tmp/gitleaks.tar.gz
+          printf '%s  %s\n' '551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb' /tmp/gitleaks.tar.gz | sha256sum --check
+          tar -xzf /tmp/gitleaks.tar.gz -C /tmp gitleaks
+      - name: Scan all refs and full history without exposing matched values
+        run: /tmp/gitleaks git --log-opts="--all --full-history -m" --ignore-gitleaks-allow --redact=100 --no-banner .

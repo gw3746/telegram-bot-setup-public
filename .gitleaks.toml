@@ -1,0 +1,15 @@
+title = "telegram-bot-setup secret scanning"
+
+[extend]
+useDefault = true
+
+[[rules]]
+id = "telegram-bot-token-shape"
+description = "Telegram Bot token; synthetic placeholders should not look usable"
+regex = '''[0-9]{6,}:[A-Za-z0-9_-]{20,}'''
+
+[[rules]]
+id = "telegram-account-api-hash"
+description = "Literal Telegram account API hash assignment"
+regex = '''(?i)TG_API_HASH\s*=\s*["']?([a-f0-9]{32})'''
+secretGroup = 1

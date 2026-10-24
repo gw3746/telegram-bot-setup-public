@@ -1,0 +1,7 @@
+#!/usr/bin/env python3
+"""以本專案 uv 環境執行初始化，保留授權終端。
+
+Run setup in this project uv environment, preserving the authorization terminal."""
+from tg_install import setup_main
+
+raise SystemExit(setup_main())
