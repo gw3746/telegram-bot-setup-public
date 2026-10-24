@@ -275,6 +275,8 @@ def test_cli_existing_webhook_stops_before_polling(tmp_path, monkeypatch, capsys
 def test_cli_without_destination_saves_inside_project_from_other_working_directory(tmp_path, monkeypatch, capsys):
     project = tmp_path / 'project'
     elsewhere = tmp_path / 'elsewhere'
+    home = tmp_path / 'synthetic-home'
+    state = home / '.local/state/telegram-bot-setup/receiver'
     project.mkdir()
     elsewhere.mkdir()
     class Api(FakeApi):
@@ -288,6 +290,9 @@ def test_cli_without_destination_saves_inside_project_from_other_working_directo
     monkeypatch.setattr(receiver, 'ROOT', project)
     monkeypatch.setattr(receiver, 'Telegram', lambda _: Api(b'%PDF-1.7\noriginal'))
     monkeypatch.setattr(receiver, 'credentials', lambda *_: 'synthetic')
+    # 預設狀態與帳號鎖分別隔離，避免重跑沿用其他目的地的綁定。 / Isolate default state and account locks across runs.
+    monkeypatch.setenv('HOME', str(home))
+    monkeypatch.delenv('TG_CONFIG_STATE_DIR', raising=False)
     monkeypatch.setenv('XDG_STATE_HOME', str(tmp_path / 'xdg'))
     monkeypatch.chdir(elsewhere)
     assert receiver.main(['--allowed-user', '123', '--non-interactive', '--json-events', '--once']) == 0
@@ -295,6 +300,8 @@ def test_cli_without_destination_saves_inside_project_from_other_working_directo
     assert Path(event['path']).parent == project / 'received'
     assert Path(event['path']).read_bytes() == b'%PDF-1.7\noriginal'
     assert not (elsewhere / 'received').exists()
+    assert (state / 'receiver.sqlite3').is_file()
+    assert not (project / '.state').exists()
 
 
 @pytest.mark.parametrize('chunks,size,expected', [

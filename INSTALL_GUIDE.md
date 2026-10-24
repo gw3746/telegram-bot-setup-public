@@ -309,7 +309,7 @@ Keep the original configuration path, state directory, bot, route, and journal. 
 
 ## Advanced settings and data storage
 
-Setup reads fixed settings only from the selected configuration file. Precedence is `--env-path`, then `TG_CONFIG_ENV_PATH`, then repository `.env`. For state it is `--state-dir`, then `TG_CONFIG_STATE_DIR`, then repository `.state`. `--bot-name`, `--bot-username`, and `--route` override corresponding non-secret settings.
+Setup reads fixed settings only from the selected configuration file. Precedence is `--env-path`, then `TG_CONFIG_ENV_PATH`, then repository `.env`. For state it is `--state-dir`, then `TG_CONFIG_STATE_DIR`, then `~/.local/state/telegram-bot-setup`. Existing users can copy the contents of repository `.state` to the new location, or set `TG_CONFIG_STATE_DIR` to the old directory. `--bot-name`, `--bot-username`, and `--route` override corresponding non-secret settings.
 
 With a valid session, `--non-interactive` avoids interactive input. Without authorization it exits immediately without requesting a code or waiting on stdin. Explicit username rejection also avoids interactive selection. Incomplete setup exits nonzero; successful setup or a complete local record exits zero.
 

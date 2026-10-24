@@ -294,7 +294,7 @@ TG_CHAT_ID=<YOUR_PRIVATE_CHAT_ID>
 
 ## 進階設定與資料保存
 
-setup 固定資料只讀指定設定檔。`--env-path` 優先於 `TG_CONFIG_ENV_PATH`，再來是 repository `.env`；`--state-dir` 優先於 `TG_CONFIG_STATE_DIR`，再來是 repository `.state`。`--bot-name`、`--bot-username`、`--route` 可覆寫對應非秘密檔案值。有效 Session 可加 `--non-interactive`，未授權會立即退出、不發登入碼、不等 stdin；username 明確被拒也不進入互動選擇。未完成回非零，成功或本機完整紀錄回零。
+setup 固定資料只讀指定設定檔。`--env-path` 優先於 `TG_CONFIG_ENV_PATH`，再來是 repository `.env`；`--state-dir` 優先於 `TG_CONFIG_STATE_DIR`，再來是 `~/.local/state/telegram-bot-setup`。舊版使用者可把 repository `.state` 的內容複製到新位置，或設定 `TG_CONFIG_STATE_DIR` 指回舊目錄。`--bot-name`、`--bot-username`、`--route` 可覆寫對應非秘密檔案值。有效 Session 可加 `--non-interactive`，未授權會立即退出、不發登入碼、不等 stdin；username 明確被拒也不進入互動選擇。未完成回非零，成功或本機完整紀錄回零。
 
 使用別的設定檔時：
 

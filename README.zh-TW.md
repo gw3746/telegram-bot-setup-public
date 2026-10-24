@@ -90,7 +90,7 @@ BotFather 工具提供 `request-login-code`、`complete-login`、`create-bot`、
 
 輪換先預檢明確來源，為每次執行建立獨立私有目錄，備份並讀回核對，再於撤銷前記錄 journal。取得新 Token 後先安全保存並讀回，完成 `getMe` 身份核對才逐檔更新；每檔狀態留在 journal。若部分失敗，工具停止處理其他 Bot 並輸出 `RECOVERY_DIR`，須參照受保護紀錄及 BotFather 人工恢復，不能假設舊 Token 仍有效。外部撤銷與多檔更新不構成原子交易；詳見 [輪換操作](TG_USAGE.md#原有分段工具與輪換-token) 及 [安全回報與憑證保護](SECURITY.md)。
 
-主帳號工具預設設定為本倉庫 `.env`，Session、登入狀態與 Bot 更新 offset 在 `.state`。`TG_CONFIG_STATE_DIR` 可調整 BotFather Session／登入狀態預設位置；相關工具的 `--env-path`、`--session-path`、`--login-state-path` 可按介面覆寫；`tg-cli-bot-updates.json` 的位置固定在本倉庫 `.state`。設定、Session、offset 及 Token 輪換對照均不可提交。已登入帳號可用 `tg history me --limit 1` 讀 Saved Messages 最後一筆。
+主帳號工具預設設定為本倉庫 `.env`，Session、登入狀態、Bot 更新 offset 與 Token 輪換紀錄在 `~/.local/state/telegram-bot-setup`。`TG_CONFIG_STATE_DIR` 可覆寫此狀態根目錄，包含 `tg-cli-bot-updates.json` 與 `token_rotation/`、`receiver/` 子目錄；各工具仍可依介面使用 `--env-path`、`--session-path`、`--login-state-path`、`--state-dir` 覆寫。舊版使用者可把本倉庫 `.state` 的內容複製到新位置，或設定 `TG_CONFIG_STATE_DIR` 指回舊目錄。設定、Session、offset 及 Token 輪換對照均不可提交。已登入帳號可用 `tg history me --limit 1` 讀 Saved Messages 最後一筆。
 
 舊帳號及 provision 入口將本人 Session 目錄收緊至 0700、Session 與 SQLite 附屬檔至 0600，不安全路徑或權限失敗會停止操作；請使用專用目錄。CLI 診斷遮蔽當次憑證。user-session 發送須有含正整數 ID 的訊息物件，缺回執非零退出、不印 `MESSAGE_SENT` 且不自動重送；設定更新一致處理全部同名鍵並維持原子 0600 寫入。收件下載遇永久 4xx 拒絕（429 除外）或累計 20 次暫時失敗（約 70 分鐘退避）即停止，HTTP 拒絕優先於矛盾 JSON，既有 queue DB 可繼續用；詳見[收件指南](docs/RECEIVING.md)。
 

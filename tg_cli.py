@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # 由同目錄 tg launcher 透過本專案 uv 環境啟動。 / Started by the sibling tg launcher using this project's uv environment.
 from __future__ import annotations
-from tg_i18n import tr, language_errors, configure_language, LanguageError, LanguageArgumentParser
 
 import argparse
 import json
@@ -12,16 +11,18 @@ from typing import Any
 from urllib import request
 
 ROOT = Path(__file__).resolve().parent
+# 套件及外部 symlink 載入時，先定位檔案實體目錄的共用模組。
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+from tg_i18n import tr, language_errors, configure_language, LanguageError, LanguageArgumentParser
 from provision_telegram_bot import DEFAULT_ENV_PATH, DEFAULT_SESSION_PATH, load_simple_env, require_authorized_client, safe_cli_error
 from tg_delivery import redact
 from tg_notify import _BOT_CONFIG
 from tg_settings import custom_routes
 
 
-DEFAULT_BOT_STATE = ROOT / ".state" / "tg-cli-bot-updates.json"
+DEFAULT_BOT_STATE = DEFAULT_SESSION_PATH.parent / "tg-cli-bot-updates.json"
 
 
 def json_print(payload: Any) -> None:

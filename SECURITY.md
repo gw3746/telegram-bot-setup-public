@@ -16,7 +16,7 @@ Bot Token 視同密碼。若外洩，先透過官方 BotFather 撤銷／重發�
 
 ## 開發與部署
 
-設定保留在 `.env` 或明確指定的私有檔案，0600 或更窄；Session／狀態目錄 0700。不要提交這些檔案或把秘密放進命令列。自動測試使用合成資料，根目錄 conftest 阻擋真實 requests／urllib／socket；CI 不需要 Telegram 憑證。
+設定保留在 `.env` 或明確指定的私有檔案，0600 或更窄；Session、登入狀態、Bot 更新 offset、Token 輪換紀錄及收件狀態預設保存在 `~/.local/state/telegram-bot-setup`，可由 `TG_CONFIG_STATE_DIR` 覆寫根目錄，各工具的個別路徑參數仍優先。Session／狀態目錄 0700。舊版使用者可把 repo 內 `.state` 的內容複製到新位置，或設定 `TG_CONFIG_STATE_DIR` 指回舊目錄；遷移及備份副本同樣須保護憑證。不要提交這些檔案或把秘密放進命令列。自動測試使用合成資料，根目錄 conftest 阻擋真實 requests／urllib／socket；CI 不需要 Telegram 憑證。
 
 舊帳號 CLI 與 provision 在建立及使用 Session 前後，會把本人擁有的 Session 父目錄收緊至 0700，Session 與 SQLite 附屬檔收緊至 0600；不安全的連結、非本人檔案或無法收緊權限時拒絕操作。請使用專用狀態目錄，避免把 Session 指向共用目錄。錯誤診斷沿用共用去敏，遮蔽當次 Token、API hash、電話與密碼；不要以去敏取代秘密管理。
 

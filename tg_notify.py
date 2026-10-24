@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from tg_i18n import tr, language_errors, configure_language, LanguageError
 import os
+import sys
 import html
 import hashlib
 import json
@@ -9,6 +9,12 @@ import requests
 from pathlib import Path
 from typing import Optional, Dict, Any
 
+# 套件及外部 symlink 載入時，先定位檔案實體目錄的共用模組。
+ROOT = Path(__file__).resolve().parent
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from tg_i18n import tr, language_errors, configure_language, LanguageError
 from tg_delivery import MAX_INLINE_WAIT_SECONDS, redact, request_with_retry, split_plaintext
 from tg_settings import custom_routes
 

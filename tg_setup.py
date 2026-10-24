@@ -2,7 +2,6 @@
 
 Guided first-run setup; import and --help do not load Telegram dependencies."""
 from __future__ import annotations
-from tg_i18n import tr, language_errors, configure_language, LanguageError, LanguageArgumentParser
 
 import argparse
 from contextlib import contextmanager
@@ -18,12 +17,17 @@ import time
 import uuid
 import warnings
 
+# 套件及外部 symlink 載入時，先定位檔案實體目錄的共用模組。
+ROOT = Path(__file__).resolve().parent
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from tg_i18n import tr, language_errors, configure_language, LanguageError, LanguageArgumentParser
 from tg_settings import (BUILTIN_ROUTE_NAMES, SettingsError, absolute, custom_routes, load_env,
                          private_directory, read_json, register_route,
                          secure_lock, write_env_keys, write_json)
 
 
-ROOT = Path(__file__).resolve().parent
 BUILTIN_ROUTES = BUILTIN_ROUTE_NAMES
 TOKEN_RE = re.compile(r'\d{6,}:[A-Za-z0-9_-]{20,}')
 STAGES = {
@@ -58,7 +62,7 @@ class SafeParser(LanguageArgumentParser):
 def parser():
     result = SafeParser(description=tr('setup_help_description'))
     result.add_argument('--env-path', default=os.getenv('TG_CONFIG_ENV_PATH', str(ROOT / '.env')))
-    result.add_argument('--state-dir', default=os.getenv('TG_CONFIG_STATE_DIR', str(ROOT / '.state')))
+    result.add_argument('--state-dir', default=os.getenv('TG_CONFIG_STATE_DIR', str(Path.home() / '.local' / 'state' / 'telegram-bot-setup')))
     result.add_argument('--bot-name')
     result.add_argument('--bot-username')
     result.add_argument('--route')

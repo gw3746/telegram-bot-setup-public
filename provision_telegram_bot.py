@@ -1,26 +1,31 @@
 #!/usr/bin/env python3
 from __future__ import annotations
-from tg_i18n import tr, language_errors, configure_language, LanguageError, LanguageArgumentParser
 
 import argparse
 import json
 import os
 import re
+import sys
 import time
 import stat
 from contextlib import contextmanager
 from pathlib import Path
 from tempfile import NamedTemporaryFile
 
+# 套件及外部 symlink 載入時，先定位檔案實體目錄的共用模組。
+PROJECT_DIR = Path(__file__).resolve().parent
+if str(PROJECT_DIR) not in sys.path:
+    sys.path.insert(0, str(PROJECT_DIR))
+
+from tg_i18n import tr, language_errors, configure_language, LanguageError, LanguageArgumentParser
 from telethon.errors import SessionPasswordNeededError
 from telethon.sync import TelegramClient
 from tg_delivery import redact
 
 
-PROJECT_DIR = Path(__file__).resolve().parent
 DEFAULT_ENV_PATH = Path(os.environ.get("TG_CONFIG_ENV_PATH", str(PROJECT_DIR / ".env")))
-# 新副本預設只用自己的狀態，不自動接管既有 Telegram Session。 / Use only this checkout's state; never take over an existing Telegram Session automatically.
-DEFAULT_STATE_DIR = Path(os.environ.get("TG_CONFIG_STATE_DIR", str(PROJECT_DIR / ".state")))
+# 狀態預設放在使用者狀態目錄，可由 TG_CONFIG_STATE_DIR 覆寫。 / Use the user state directory unless TG_CONFIG_STATE_DIR overrides it.
+DEFAULT_STATE_DIR = Path(os.environ.get("TG_CONFIG_STATE_DIR", str(Path.home() / ".local" / "state" / "telegram-bot-setup")))
 DEFAULT_SESSION_PATH = DEFAULT_STATE_DIR / "botfather_user"
 DEFAULT_LOGIN_STATE_PATH = DEFAULT_STATE_DIR / "botfather_login.json"
 BOTFATHER_USERNAME = "BotFather"

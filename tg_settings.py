@@ -2,7 +2,6 @@
 
 Shared secure setup files and routes without importing Telegram dependencies."""
 from __future__ import annotations
-from tg_i18n import tr
 
 from contextlib import contextmanager
 from collections.abc import Collection
@@ -12,10 +11,17 @@ import os
 from pathlib import Path
 import re
 import stat
+import sys
 import tempfile
 
 
 ROOT = Path(__file__).resolve().parent
+# 套件及外部 symlink 載入時，先定位檔案實體目錄的共用模組。
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from tg_i18n import tr
+
 BUILTIN_ROUTE_NAMES = frozenset({'DEFAULT'})
 ROUTE_NAME = re.compile(r"[A-Z][A-Z0-9_]{0,31}")
 ENV_KEY = re.compile(r"[A-Za-z_][A-Za-z0-9_]*")

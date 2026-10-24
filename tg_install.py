@@ -1,7 +1,6 @@
 """不依賴 Telegram 套件的專案安裝及啟動入口。
 
 Project installation and bootstrap without Telegram package dependencies."""
-from tg_i18n import tr, language_errors, configure_language, LanguageError, LanguageArgumentParser, save_language, language
 import argparse
 import contextlib
 import io
@@ -11,9 +10,14 @@ import shutil
 import subprocess
 import sys
 
+# 套件及外部 symlink 載入時，先定位檔案實體目錄的共用模組。
+ROOT = Path(__file__).resolve().parent
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from tg_i18n import tr, language_errors, configure_language, LanguageError, LanguageArgumentParser, save_language, language
 
 UV_GUIDE = "https://docs.astral.sh/uv/getting-started/installation/"
-ROOT = Path(__file__).resolve().parent
 
 
 def find_uv(environ=None):

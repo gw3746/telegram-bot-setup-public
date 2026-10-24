@@ -29,7 +29,7 @@ uv run --project . python sys_notify.py --help
 
 ## 帳號查詢與媒體下載
 
-`./tg` 使用本地 Telethon user session，預設讀本倉庫 `.env` 與 `.state/botfather_user`。全域 `--env-path`、`--session-path` 放在子命令之前；`TG_CONFIG_STATE_DIR` 可更換預設狀態資料夾。
+`./tg` 使用本地 Telethon user session，預設讀本倉庫 `.env` 與 `~/.local/state/telegram-bot-setup/botfather_user`。全域 `--env-path`、`--session-path` 放在子命令之前；`TG_CONFIG_STATE_DIR` 可更換預設狀態資料夾。舊版使用者可把本倉庫 `.state` 的內容複製到 `~/.local/state/telegram-bot-setup`，或設定 `TG_CONFIG_STATE_DIR` 指回舊目錄。
 
 帳號及 provision 入口會把本人擁有的 Session 父目錄收緊為 0700，Session 與 SQLite 附屬檔為 0600；不安全路徑或無法保護權限時拒絕操作。請使用專用 Session 目錄。CLI 錯誤經共用去敏，避免 Token、API hash、電話與密碼洩漏。
 
@@ -54,7 +54,7 @@ uv run --project . python sys_notify.py --help
 
 ## Bot 新收件
 
-`bot-updates` 以指定路由 Token 呼叫 Bot API `getUpdates`，只讀該 Bot 的**新**訊息，不能讀 user session 的全部聊天室歷史。預設不推進本地 offset；確認已處理後才加 `--ack`，它會更新本倉庫 `.state/tg-cli-bot-updates.json`。同一 Token 若有現用收件 consumer，不要同時使用此命令競爭更新。
+`bot-updates` 以指定路由 Token 呼叫 Bot API `getUpdates`，只讀該 Bot 的**新**訊息，不能讀 user session 的全部聊天室歷史。預設不推進本地 offset；確認已處理後才加 `--ack`，它會更新 `~/.local/state/telegram-bot-setup/tg-cli-bot-updates.json`（可由 `TG_CONFIG_STATE_DIR` 更換根目錄）。同一 Token 若有現用收件 consumer，不要同時使用此命令競爭更新。
 
 ```bash
 ./tg bot-updates --bot PERSONAL --limit 20
@@ -86,7 +86,7 @@ uv run --project . python sys_notify.py --help
 
 ## 原有分段工具與輪換 Token
 
-`provision_telegram_bot.py` 保留原有分段管理功能，預設讀本倉庫 `.env`，Session 放在 `.state`。全域 `--env-path`、`--session-path`、`--login-state-path` 放在子命令之前。首次登入請使用 setup 的隱藏輸入；舊 `complete-login` 介面仍保留，但本指南不提供把驗證碼放入命令列的範例。下列舊 `create-bot` 只建立 Bot／保存 Token，不等於完整初始化，也不會自動註冊新路由。
+`provision_telegram_bot.py` 保留原有分段管理功能，預設讀本倉庫 `.env`，Session 與登入狀態放在 `~/.local/state/telegram-bot-setup`；`TG_CONFIG_STATE_DIR` 可覆寫此目錄。全域 `--env-path`、`--session-path`、`--login-state-path` 放在子命令之前。首次登入請使用 setup 的隱藏輸入；舊 `complete-login` 介面仍保留，但本指南不提供把驗證碼放入命令列的範例。下列舊 `create-bot` 只建立 Bot／保存 Token，不等於完整初始化，也不會自動註冊新路由。
 
 ```bash
 uv run --project . python provision_telegram_bot.py --help
@@ -104,7 +104,7 @@ uv run --project . python provision_telegram_bot.py send-message \
 
 `rotate_telegram_bot_tokens.py` 用 `getMe` 比對新舊 Bot 身份（`getMe` 回傳的是 Bot User，無須訊息 ID）；一般輸出不顯示 Token。預檢會讀取明確來源，其他 consumer 僅處理明確指定的 `--consumer-file`。`--dry-run` 查身份但不呼叫 BotFather 輪換；正式輪換會使舊 Token 失效。`--only` 可重複指定設定鍵。
 
-正式執行先建立唯一私有 run 目錄、按來源完整路徑識別備份並讀回核對，然後在 journal 記錄 `revoking` 才呼叫 BotFather。取得新 Token 後，先以 0600 原子保存至 journal 並讀回，再用 `getMe` 核對身份；其後逐檔記錄 `updating` 及 `completed`／`unchanged`。備份 manifest 含來源與 SHA-256；同一來源只處理一次，同秒執行也有不同 run 目錄。來源或其目錄若為 symlink 會拒絕；來源原權限為 0400 不會被擴大，較寬權限會收緊至最多 0600。安全寫入使用排他建立的隨機 0600 暫存檔，先同步檔案，再替換目標並同步父目錄。狀態／run 目錄為 0700；journal、manifest、對照與備份為 0600。
+正式執行先在 `~/.local/state/telegram-bot-setup/token_rotation`（可由 `TG_CONFIG_STATE_DIR` 更換根目錄）建立唯一私有 run 目錄、按來源完整路徑識別備份並讀回核對，然後在 journal 記錄 `revoking` 才呼叫 BotFather。取得新 Token 後，先以 0600 原子保存至 journal 並讀回，再用 `getMe` 核對身份；其後逐檔記錄 `updating` 及 `completed`／`unchanged`。備份 manifest 含來源與 SHA-256；同一來源只處理一次，同秒執行也有不同 run 目錄。來源或其目錄若為 symlink 會拒絕；來源原權限為 0400 不會被擴大，較寬權限會收緊至最多 0600。安全寫入使用排他建立的隨機 0600 暫存檔，先同步檔案，再替換目標並同步父目錄。狀態／run 目錄為 0700；journal、manifest、對照與備份為 0600。
 
 進入撤銷階段後任一部分失敗會停止後續 Bot；一般失敗會嘗試標記 `needs_manual_recovery`，並以非零結束碼輸出 `RECOVERY_DIR`。若 journal 本身保存或同步失敗，也會停止且不覆寫既有 journal，紀錄可能只到 `revoking`，無法保證寫入恢復標記。請限制存取該目錄，核對 journal、manifest、備份與各來源實際狀態，再透過 BotFather 人工恢復；不要把含 Token 的檔案內容貼到終端紀錄或支援對話。舊 Token 可能已失效，備份不能當成自動回滾；現無自動恢復命令。外部撤銷與多檔更新並非原子交易，也沒有跨 run 鎖或對惡意並行重新命名的完整目錄 fd 保證。`getMe` 的網路、HTTP、JSON、API 失敗使用固定安全分類；CLI 錯誤不印 traceback、請求 URL 或 Token。憑證外洩與回報方式見 [SECURITY.md](SECURITY.md)。
 

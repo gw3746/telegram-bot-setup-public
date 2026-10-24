@@ -22,7 +22,7 @@
 ./tg-receive --bot PERSONAL --allowed-user 123456789
 ```
 
-首次於互動終端啟動且未指定圖片模式時，會問「圖片要保留原檔並另存 JPG 嗎？[y/N]」。回答否或直接按 Enter，使用 `original`；回答是，使用 `jpeg`。選擇保存至狀態目錄的 `receiver.json`，下次沿用。可用 `--image-mode original` 或 `--image-mode jpeg` 明確指定並保存；`--non-interactive` 不詢問，無既有選擇時使用 `original`。預設狀態目錄是專案 `.state/receiver`，可用 `--state-dir` 指定其他目錄；`--env-path` 可指定私有設定檔。
+首次於互動終端啟動且未指定圖片模式時，會問「圖片要保留原檔並另存 JPG 嗎？[y/N]」。回答否或直接按 Enter，使用 `original`；回答是，使用 `jpeg`。選擇保存至狀態目錄的 `receiver.json`，下次沿用。可用 `--image-mode original` 或 `--image-mode jpeg` 明確指定並保存；`--non-interactive` 不詢問，無既有選擇時使用 `original`。預設狀態目錄是 `~/.local/state/telegram-bot-setup/receiver`；設定 `TG_CONFIG_STATE_DIR` 時使用其下的 `receiver/`，`--state-dir` 可再指定其他目錄；`--env-path` 可指定私有設定檔。舊版使用者可把專案 `.state` 的內容複製到新狀態根目錄，或設定 `TG_CONFIG_STATE_DIR` 指回舊 `.state`。
 
 只需保留原檔與 PDF 時，根專案相依已足夠。選擇 `jpeg` 前，先在專案根目錄安裝可選圖片相依：
 

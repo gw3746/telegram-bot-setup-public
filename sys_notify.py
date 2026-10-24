@@ -1,6 +1,13 @@
 # -*- coding: utf-8 -*-
-from tg_i18n import tr, language_errors, configure_language, LanguageError
 import sys
+from pathlib import Path
+
+# 套件及外部 symlink 載入時，先定位檔案實體目錄的共用模組。
+ROOT = Path(__file__).resolve().parent
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from tg_i18n import tr, language_errors, configure_language, LanguageError
 from tg_notify import send_text
 from tg_delivery import redact
 

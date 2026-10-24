@@ -17,7 +17,6 @@ Recover interrupted runs manually using the journal and BotFather.
   uv run --project . python rotate_telegram_bot_tokens.py --consumer-file /explicit/path/consumer.env
 """
 from __future__ import annotations
-from tg_i18n import tr, configure_language, LanguageError, LanguageArgumentParser
 
 import argparse
 import hashlib
@@ -32,7 +31,12 @@ from pathlib import Path
 
 import requests
 
-sys.path.insert(0, str(Path(__file__).resolve().parent))
+# 套件及外部 symlink 載入時，先定位檔案實體目錄的共用模組。
+PROJECT_DIR = Path(__file__).resolve().parent
+if str(PROJECT_DIR) not in sys.path:
+    sys.path.insert(0, str(PROJECT_DIR))
+
+from tg_i18n import tr, configure_language, LanguageError, LanguageArgumentParser
 from provision_telegram_bot import (  # noqa: E402
     DEFAULT_ENV_PATH,
     DEFAULT_SESSION_PATH,
@@ -43,8 +47,7 @@ from provision_telegram_bot import (  # noqa: E402
 )
 from tg_delivery import redact  # noqa: E402
 
-PROJECT_DIR = Path(__file__).resolve().parent
-STATE_DIR = PROJECT_DIR / ".state" / "token_rotation"
+STATE_DIR = Path(os.environ.get("TG_CONFIG_STATE_DIR", str(Path.home() / ".local" / "state" / "telegram-bot-setup"))) / "token_rotation"
 FULL_TOKEN_RE = re.compile(r"^\d{6,}:[A-Za-z0-9_-]{20,}$")
 USERNAME_RE = re.compile(r"^[A-Za-z0-9_]{1,32}$")
 RECOVERY_MESSAGE_KEY = 'rotation_recovery_required'

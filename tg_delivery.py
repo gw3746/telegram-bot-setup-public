@@ -10,16 +10,23 @@ failure is deliberately not retried: the first request may already have arrived.
 
 整合副本共用的 Telegram 請求安全規則。此為自有實作；Telegram retry_after、PTB 限流、aiogram 錯誤分類及 Apprise 回執等設計參考列在來源文件，未複製上游實作。不記錄請求 URL、內容、憑證或原始例外；回報 API 接受狀態而非使用者已讀狀態。傳輸結果不明時不自動重試，以免重複送達。"""
 from __future__ import annotations
-from tg_i18n import tr
 
 import math
 import re
+import sys
 import time
 from collections.abc import Callable, Iterable
+from pathlib import Path
 from typing import Any
 
 import requests
 
+# 套件及外部 symlink 載入時，先定位檔案實體目錄的共用模組。
+ROOT = Path(__file__).resolve().parent
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from tg_i18n import tr
 
 # A long server-directed wait is handed back to the caller rather than blocking / 過長的伺服器指定等待交回呼叫端，
 # a cron process indefinitely or retrying before Telegram permits it. / 避免排程無限阻塞或在 Telegram 允許前重試。

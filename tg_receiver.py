@@ -2,7 +2,6 @@
 
 Generic image/PDF reception and saved-file events without personal business logic."""
 from __future__ import annotations
-from tg_i18n import tr, language_errors, configure_language, LanguageError, LanguageArgumentParser
 
 import argparse
 import hashlib
@@ -20,6 +19,12 @@ import warnings
 
 import requests
 
+# 套件及外部 symlink 載入時，先定位檔案實體目錄的共用模組。
+ROOT = Path(__file__).resolve().parent
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from tg_i18n import tr, language_errors, configure_language, LanguageError, LanguageArgumentParser
 from tg_delivery import api_error_code, redact
 
 try:
@@ -31,7 +36,6 @@ from tg_notify import _BOT_CONFIG
 from tg_settings import (SettingsError, custom_routes, load_env, private_directory,
                          read_bytes, read_json, secure_lock, write_json, write_private)
 
-ROOT = Path(__file__).resolve().parent
 MAX_BYTES = 20 * 1024 * 1024
 MAX_PIXELS = 60_000_000
 # 約 70 分鐘退避，避免短暫斷線就放棄收件。 / About 70 minutes of backoff so brief outages do not drop files.
@@ -360,7 +364,8 @@ def parser():
     result.add_argument('--bot', default='DEFAULT')
     result.add_argument('--destination', type=Path, default=ROOT / 'received',
                         help=tr('receive_destination_help'))
-    result.add_argument('--state-dir', type=Path, default=ROOT / '.state/receiver')
+    result.add_argument('--state-dir', type=Path,
+                        default=Path(os.getenv('TG_CONFIG_STATE_DIR', str(Path.home() / '.local' / 'state' / 'telegram-bot-setup'))) / 'receiver')
     result.add_argument('--allowed-user', type=int, action='append', required=True)
     result.add_argument('--image-mode', choices=('original', 'jpeg'))
     result.add_argument('--non-interactive', action='store_true')

@@ -321,6 +321,9 @@ def test_legacy_python_tg_help_runs_without_configuration_or_network(monkeypatch
     assert not list(checkout.rglob("*.session*"))
 
 
+SYNTHETIC_HOME = Path("/nonexistent-synthetic-home")
+
+
 def load_tool_without_telethon(monkeypatch, filename):
     def forbidden_client(*_args, **_kwargs):
         raise AssertionError("工具預設值檢查不可建立Telegram client或Session")
@@ -333,7 +336,8 @@ def load_tool_without_telethon(monkeypatch, filename):
     monkeypatch.setitem(sys.modules, "telethon", package)
     monkeypatch.setitem(sys.modules, "telethon.errors", errors)
     monkeypatch.setitem(sys.modules, "telethon.sync", sync)
-    monkeypatch.setattr(Path, "home", lambda: (_ for _ in ()).throw(AssertionError("不可依賴家目錄設定")))
+    # 合成家目錄只供路徑計算，不建立真實 Session。 / Use a synthetic home for path calculations only.
+    monkeypatch.setattr(Path, "home", lambda: SYNTHETIC_HOME)
     spec = importlib.util.spec_from_file_location("independent_tool_probe", ROOT / filename)
     probe = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(probe)
@@ -353,5 +357,5 @@ def test_bot_provision_defaults_cannot_reuse_original_config_or_session(monkeypa
     assert Path(probe.DEFAULT_SESSION_PATH).is_relative_to(selected_state)
     assert Path(probe.DEFAULT_LOGIN_STATE_PATH).is_relative_to(selected_state)
     if not override:
-        assert selected_state.is_relative_to(ROOT / ".state")
+        assert selected_state == SYNTHETIC_HOME / ".local" / "state" / "telegram-bot-setup"
     assert not state.exists()

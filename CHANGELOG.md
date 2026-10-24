@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Resolve sibling imports from each module's real directory before loading shared modules, supporting direct CLI execution, package imports, and imports through external symlinks without duplicate search-path entries.
+- 載入共用模組前，先以各模組的實體目錄解析同目錄匯入，支援直接執行 CLI、套件匯入與外部 symlink 匯入，且不重複加入搜尋路徑。
+- Move default Sessions, login state, bot update offsets, Token rotation records, and setup/receiver state to `~/.local/state/telegram-bot-setup`; retain `TG_CONFIG_STATE_DIR` and per-tool overrides. Existing users can copy the contents of repository `.state` to the new location or set `TG_CONFIG_STATE_DIR` to the old directory.
+- Session、登入狀態、Bot 更新 offset、Token 輪換紀錄及 setup／收件狀態預設改放 `~/.local/state/telegram-bot-setup`；保留 `TG_CONFIG_STATE_DIR` 及各工具的個別覆寫。舊版使用者可把 repo 內 `.state` 的內容複製到新位置，或設定 `TG_CONFIG_STATE_DIR` 指回舊目錄。
 - Protect legacy account Sessions and SQLite sidecars with 0600 permissions; tighten owned Session directories to 0700 and reject unsafe paths. CLI diagnostics share credential redaction.
 - 舊帳號入口強制 Session 與 SQLite 附屬檔 0600、本人 Session 目錄 0700；拒絕不安全路徑，CLI 共用憑證去敏。
 - User-session sends require a valid positive integer message ID; missing receipts exit nonzero without automatic resending. Duplicate configuration keys are updated consistently through atomic private writes.
