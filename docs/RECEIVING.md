@@ -4,7 +4,7 @@
 
 ## 使用前準備
 
-先按[安裝指南](../INSTALL_GUIDE.md)完成根專案安裝，並選定已有憑證的 `DEFAULT`，或透過七步 setup 建立 `PERSONAL`。純 Bot 收件只用 Bot Token，不需要帳號 `API_ID`／`API_HASH` 或 user Session。`--allowed-user` 必須填允許傳檔者的正整數 Telegram `user_id`，可重複指定；本人私人聊天的 `user_id` 通常與該聊天的 Chat ID 相同，但請以實際訊息核對，不要填 Bot ID。未指定 `--destination` 時，目標固定為專案根目錄內的 `received/`，第一次有效啟動時自動建立，不受目前終端所在目錄影響；需要其他位置時才指定 `--destination`。範例的 `received/` 已由 Git 忽略；自訂目錄可放在倉庫外，或自行加入忽略清單，避免提交收到的私人檔案。
+先按[安裝指南](../INSTALL_GUIDE.md)完成根專案安裝，並選定已有憑證的 `DEFAULT`，或透過七步 setup 建立 `PERSONAL`。純 Bot 收件只用 Bot Token，不需要帳號 `API_ID`／`API_HASH` 或 user Session。`--allowed-user` 必須填允許傳檔者的正整數 Telegram `user_id`，可重複指定；傳送者與 Bot 的一對一私人聊天中，該傳送者的 `user_id` 通常與該聊天的 Chat ID 相同，但請以實際訊息核對，不要填 Bot ID。未指定 `--destination` 時，目標固定為專案根目錄內的 `received/`，第一次有效啟動時自動建立，不受目前終端所在目錄影響；需要其他位置時才指定 `--destination`。範例的 `received/` 已由 Git 忽略；自訂目錄可放在倉庫外，或自行加入忽略清單，避免提交收到的私人檔案。
 
 ## 收到的檔案放在哪裡
 

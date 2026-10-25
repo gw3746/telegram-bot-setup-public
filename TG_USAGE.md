@@ -31,7 +31,7 @@ uv run --project . python sys_notify.py --help
 
 `./tg` 使用本地 Telethon user session，預設讀本倉庫 `.env` 與 `~/.local/state/telegram-bot-setup/botfather_user`。全域 `--env-path`、`--session-path` 放在子命令之前；`TG_CONFIG_STATE_DIR` 可更換預設狀態資料夾。舊版使用者可把本倉庫 `.state` 的內容複製到 `~/.local/state/telegram-bot-setup`，或設定 `TG_CONFIG_STATE_DIR` 指回舊目錄。
 
-帳號及 provision 入口會把本人擁有的 Session 父目錄收緊為 0700，Session 與 SQLite 附屬檔為 0600；不安全路徑或無法保護權限時拒絕操作。請使用專用 Session 目錄。CLI 錯誤經共用去敏，避免 Token、API hash、電話與密碼洩漏。
+帳號及 provision 入口會把執行程式的作業系統使用者所擁有的 Session 父目錄收緊為 0700，Session 與 SQLite 附屬檔為 0600；不安全路徑或無法保護權限時拒絕操作。請使用專用 Session 目錄。CLI 錯誤經共用去敏，避免 Token、API hash、電話與密碼洩漏。
 
 ```bash
 ./tg status
@@ -69,13 +69,13 @@ uv run --project . python sys_notify.py --help
 
 ## 初始化參數對照
 
-完整七步與設定範例見 [README 快速開始](README.zh-TW.md#快速開始)及[My Personal Notice 完整 Example](INSTALL_GUIDE.md#example-personal-bot)。可先填檔後安裝，或先安裝後填檔。`./tg-install` 僅安裝相依；`./tg-setup` 串接必要授權、建立／恢復 Bot、身份核對、取得本人 Chat ID、新路由保存、啟動對話與首次通知。OTP／2FA 隱藏輸入，不放 argv。
+完整七步與設定範例見 [README 快速開始](README.zh-TW.md#快速開始)及[My Personal Notice 完整 Example](INSTALL_GUIDE.md#example-personal-bot)。可先填檔後安裝，或先安裝後填檔。`./tg-install` 僅安裝相依；`./tg-setup` 串接您自己的 Telegram 帳號登入驗證、建立／恢復 Bot、身份核對、取得您的 Chat ID、新路由保存、啟動對話與首次通知。OTP／2FA 隱藏輸入，不放 argv。
 
 | setup 參數 | 用途 |
 | --- | --- |
 | `--env-path`、`--state-dir` | 私有設定及專用狀態目錄。 |
 | `--bot-name`、`--bot-username`、`--route` | 覆寫顯示名稱、唯一 username、路由等非秘密設定。顯示名可重複；username 不可與其他 Bot 重複。 |
-| `--non-interactive` | 有效 Session 可直接使用；未授權立即退出。username 明確被拒時不等待輸入，也不自動採用建議，回報 `username_selection_required` 及安全的 `suggested_username`（若查得）。 |
+| `--non-interactive` | 有效 Session 可直接使用；Session 尚未登入即退出。username 明確被拒時不等待輸入，也不自動採用建議，回報 `username_selection_required` 及安全的 `suggested_username`（若查得）。 |
 | `--check` | 只讀本機紀錄，不連線、不建 Bot 或通知。 |
 | `--confirm-started` | 手機向本次 Bot 傳 `/start` 後確認接續。 |
 | `--test-again` | 明確另發測試，接受可能重複；不繞過已知限流期限。 |

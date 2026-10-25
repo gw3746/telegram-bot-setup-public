@@ -14,7 +14,7 @@
 
 [根專案 manifest](../pyproject.toml) 直接固定 `requests==2.34.2` 和 `telethon==1.45.0`；可選 `images` extra 另固定 `Pillow==12.3.0` 與 `pillow-heif==1.8.0`。[根專案鎖檔](../uv.lock)記錄兩種安裝範圍的套件：
 
-`requests` 用於 Bot API 的 HTTP 請求；`telethon` 用於本人帳號授權、歷史讀取與 BotFather 操作。
+`requests` 用於 Bot API 的 HTTP 請求；`telethon` 用於使用者自己的 Telegram 帳號登入驗證、歷史讀取與 BotFather 操作。
 
 | 套件 | 鎖定版本 | 類別 |
 | --- | --- | --- |

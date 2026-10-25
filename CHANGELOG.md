@@ -7,7 +7,7 @@
 - Move default Sessions, login state, bot update offsets, Token rotation records, and setup/receiver state to `~/.local/state/telegram-bot-setup`; retain `TG_CONFIG_STATE_DIR` and per-tool overrides.
 - Session、登入狀態、Bot 更新 offset、Token 輪換紀錄及 setup／收件狀態預設改放 `~/.local/state/telegram-bot-setup`；保留 `TG_CONFIG_STATE_DIR` 及各工具的個別覆寫。
 - Protect legacy account Sessions and SQLite sidecars with 0600 permissions; tighten owned Session directories to 0700 and reject unsafe paths. CLI diagnostics share credential redaction.
-- 舊帳號入口強制 Session 與 SQLite 附屬檔 0600、本人 Session 目錄 0700；拒絕不安全路徑，CLI 共用憑證去敏。
+- 舊帳號入口強制 Session 與 SQLite 附屬檔 0600、執行程式的作業系統使用者所擁有的 Session 目錄 0700；拒絕不安全路徑，CLI 共用憑證去敏。
 - User-session sends require a valid positive integer message ID; missing receipts exit nonzero without automatic resending. Duplicate configuration keys are updated consistently through atomic private writes.
 - user-session 發送須有有效正整數訊息 ID；缺回執非零退出且不自動重送。重複設定鍵一致更新，維持原子私有寫入。
 - Receiver downloads stop on permanent HTTP/API rejections and after 20 transient failures (about 70 minutes of backoff). HTTP rejection codes take precedence over conflicting JSON; the existing queue schema remains compatible.
@@ -30,11 +30,11 @@
 
 ## 0.1.0 — 公測版（2026-10-24）
 
-- 本人授權後自動建立／恢復私人通知 Bot，保存 Token、Chat ID 與自訂路由。
+- 使用者自己的 Telegram 帳號登入驗證完成後自動建立／恢復私人通知 Bot，保存 Token、Chat ID 與自訂路由。
 - 無帳號 API 時可先安裝，已有 Bot Token 可使用純 Bot 通知 Example。
 - 文字、長文分段、圖片、帳號查詢與媒體下載、Token 輪換及中斷保護。
 - 初版自用應用的範圍於 0.1.1 重新收斂；請以新版功能及限制說明為準。
 - 加入離線測試／完整歷史秘密掃描 workflow 與安全回報文件。
 - 測試入口使用當前 Python 環境，支援 Python 安裝於 `/usr/local/bin` 的 Linux 容器。
 
-公測仍不提供無人介入的初次帳號授權、跨 Token 輪換自動同步 setup journal 或任意長 Markdown 安全拆分。
+公測仍不提供無人介入的首次 Telegram 帳號登入驗證、跨 Token 輪換自動同步 setup journal 或任意長 Markdown 安全拆分。

@@ -10,11 +10,11 @@ Current offline acceptance: **449 passed, zero failures/errors/skips**, with 74 
 
 ## 0.1.1 先前離線驗收（歷史結果）
 
-本版公開範圍僅涵蓋通用通知、帳號工具及收件，應用專用流程、路由、捷徑與部署不納入；保留通用內建 `DEFAULT`（`TG_BOT_TOKEN`／`TG_CHAT_ID`）、setup 自訂路由、一般 Bot API 圖片發送及通用帳號工具，新增獨立的通用圖片／PDF 收件與事件介面。最終離線測試數 **375** 項通過（含 56 項雙語介面與 32 項語言包驗收），0 失敗／錯誤／略過；下方 298 項是 0.1.0 舊版結果，不能算作本版完成驗收。全新 Debian 13／Python 3.12.13／uv 0.11.8 容器重跑同樣全通過；另驗證基礎安裝在沒有 Pillow 時仍能保存 PDF、Python sqlite3 可用、JPG 選配套件在啟動 launcher 後保留。新增 username 衝突案例涵蓋採用建議、自填、取消、非互動、查核故障、名稱競爭與保存失敗。之前以既有授權 Session 真實唯讀查核「已占用」與「當下可用」兩種 username 回應，原設定與 Session 檔案雜湊未變；沒有建立新 Bot 或改動 BotFather 對話。本輪雙語修改未操作真實 Telegram，尚未以真實 Telegram 驗收完整新建 Bot 的互動改名流程或通用收件。
+本版公開範圍僅涵蓋通用通知、帳號工具及收件，應用專用流程、路由、捷徑與部署不納入；保留通用內建 `DEFAULT`（`TG_BOT_TOKEN`／`TG_CHAT_ID`）、setup 自訂路由、一般 Bot API 圖片發送及通用帳號工具，新增獨立的通用圖片／PDF 收件與事件介面。最終離線測試數 **375** 項通過（含 56 項雙語介面與 32 項語言包驗收），0 失敗／錯誤／略過；下方 298 項是 0.1.0 舊版結果，不能算作本版完成驗收。全新 Debian 13／Python 3.12.13／uv 0.11.8 容器重跑同樣全通過；另驗證基礎安裝在沒有 Pillow 時仍能保存 PDF、Python sqlite3 可用、JPG 選配套件在啟動 launcher 後保留。新增 username 衝突案例涵蓋採用建議、自填、取消、非互動、查核故障、名稱競爭與保存失敗。之前以既有已登入 Session 真實唯讀查核「已占用」與「當下可用」兩種 username 回應，原設定與 Session 檔案雜湊未變；沒有建立新 Bot 或改動 BotFather 對話。本輪雙語修改未操作真實 Telegram，尚未以真實 Telegram 驗收完整新建 Bot 的互動改名流程或通用收件。
 
 語言包驗收確認 245 個固定訊息鍵對應兩份 INI、490 段文字逐字保留；並驗證檔案重排與改文案、按選定語言載入及快取、空白／換行／百分號、壞格式／重複鍵、缺失訊息與清楚的 CLI 診斷。雙語驗收涵蓋八個入口的中英 help、245 組完整訊息與插值對照、實際終端選單、成功後保存並沿用、語言優先序、取消、無效輸入及 0600／symlink 保護；另驗證合成 OTP／2FA、username 建議、圖片模式提示與通知前綴。使用者訊息、第三方回覆與機器欄位保持原文。詳見[語言說明](LANGUAGES.md)。
 
-Previous 0.1.1 offline acceptance: **375 tests passed**, including **56 bilingual UI cases** and **32 language-pack cases**. Fresh Linux checks covered installation and both languages. Telegram calls were blocked; simulated authorization was not live OTP/2FA acceptance.
+Previous 0.1.1 offline acceptance: **375 tests passed**, including **56 bilingual UI cases** and **32 language-pack cases**. Fresh Linux checks covered installation and both languages. Telegram calls were blocked; simulated sign-in verification was not live OTP/2FA acceptance.
 
 ## 0.1.0 歷史驗收
 
@@ -31,7 +31,7 @@ uv pip install --python .test-venv/bin/python -r requirements-test.txt
 uv run --no-project --python .test-venv/bin/python python -m pytest -q tests
 ```
 
-測試直接依賴有固定版本，傳遞依賴未完整鎖定；安裝需網路或可用快取。根目錄 conftest 阻擋 requests、urllib、socket 的真實連線，Telegram、BotFather、授權、故障回應與等待使用合成替身。安裝案例使用假 uv 或受控快取，不與真實帳號操作混在一起。
+測試直接依賴有固定版本，傳遞依賴未完整鎖定；安裝需網路或可用快取。根目錄 conftest 阻擋 requests、urllib、socket 的真實連線，Telegram、BotFather、帳號登入驗證、故障回應與等待使用合成替身。安裝案例使用假 uv 或受控快取，不與真實帳號操作混在一起。
 
 ## CI 與秘密掃描
 
@@ -52,7 +52,7 @@ uv run --no-project --python .test-venv/bin/python python -m pytest -q tests
 gitleaks git --log-opts="--all --full-history -m" --ignore-gitleaks-allow --redact=100 --no-banner .
 ```
 
-沒有命中不是安全保證；秘密掃描無法取代本人憑證管理、權限隔離及安全回報。
+沒有命中不是安全保證；秘密掃描無法取代使用者自己的憑證管理、權限隔離及安全回報。
 
 ## 範圍與限制
 

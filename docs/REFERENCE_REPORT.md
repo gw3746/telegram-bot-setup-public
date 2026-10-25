@@ -67,9 +67,9 @@ gitReply；固定 commit `5971807f73269f0b0aca0e30036bf3696a07a7c3`；先前紀�
 
 | 來源 | 本專案參考界線 |
 | --- | --- |
-| https://core.telegram.org/api/obtaining_api_id | 本人申請 API ID／hash 的前置流程。 |
-| https://my.telegram.org/apps | 本人 API 資料申請入口。 |
-| https://docs.telethon.dev/en/stable/basic/signing-in.html | 本人登入、登入碼、2FA 與 Session 重用；實作沿用 Telethon。 |
+| https://core.telegram.org/api/obtaining_api_id | 使用者以自己的 Telegram 帳號申請 API ID／hash 的前置流程。 |
+| https://my.telegram.org/apps | 使用者以自己的 Telegram 帳號申請 API 資料的入口。 |
+| https://docs.telethon.dev/en/stable/basic/signing-in.html | 使用者自己的 Telegram 帳號登入、登入碼、2FA 與 Session 重用；實作沿用 Telethon。 |
 | https://core.telegram.org/bots/api#getme | Bot 身份核對。 |
 | https://core.telegram.org/bots/api#responseparameters | `retry_after` 與 `migrate_to_chat_id` 的協定依據。 |
 | https://core.telegram.org/bots/api#sendmessage | 文字通知及回傳訊息的協定依據。 |

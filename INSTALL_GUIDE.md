@@ -2,7 +2,7 @@
 
 **English** | [正體中文](INSTALL_GUIDE.zh-TW.md)
 
-Choose the path matching your available credentials. You may download and install before obtaining `API_ID` / `API_HASH`. An existing Bot Token also lets you send notifications directly. Automatic bot creation requires your personal account API credentials and the necessary personal authorization.
+Choose the path matching your available credentials. You may download and install before obtaining `API_ID` / `API_HASH`. An existing Bot Token also lets you send notifications directly. Automatic bot creation requires API credentials for your own Telegram account and the required sign-in verification for your own Telegram account.
 
 You can obtain API credentials in a phone browser. Download, installation, and execution take place in a Linux terminal. Telegram Desktop and a mandatory configuration wizard are not required.
 
@@ -11,8 +11,8 @@ You can obtain API credentials in a phone browser. Download, installation, and e
 | Your situation | Path |
 | --- | --- |
 | No API credentials yet; install first | Complete [Step 2](#step-2-download) and [Step 3](#step-3-install). You may prepare [`.env` in Step 4](#step-4-config) and fill in credentials later without reinstalling. A bot has not been created at this stage. |
-| Let the program create a bot | Follow Example A below, then run setup with your credentials and authorization ready. |
-| Existing Bot Token, or willing to create a bot manually in BotFather | Follow [Example B](#existing-bot-only); personal API credentials are unnecessary for this path. |
+| Let the program create a bot | Follow Example A below, then run setup with your credentials ready and complete sign-in verification there. |
+| Existing Bot Token, or willing to create a bot manually in BotFather | Follow [Example B](#existing-bot-only); API credentials for your own Telegram account are unnecessary for this path. |
 
 `API_ID` / `API_HASH` are account API credentials. A Bot Token authorizes one particular bot. They are not interchangeable.
 
@@ -42,9 +42,9 @@ First register your own account using an official Telegram app. Follow [Telegram
 3. Open **API development tools** and complete the application form.
 4. **Obtain API_ID and API_HASH together in this one application process.** Save them for your private `.env` file.
 
-This website process can be completed on a phone, without a computer or Telegram Desktop. Website login and this project's session authorization are separate steps. Even after obtaining API credentials, your first run may still require a login code and 2FA password.
+This website process can be completed on a phone, without a computer or Telegram Desktop. Website login and this project's Telegram account sign-in verification are separate steps. Even after obtaining API credentials, your first run may still require a login code and 2FA password.
 
-You may complete download and installation first and return here later. Automatic bot creation in Step 5 still checks your own credentials and authorization; it does not borrow another person's credentials.
+You may complete download and installation first and return here later. Automatic bot creation in Step 5 still requires your own credentials and completed sign-in verification; it does not borrow another person's credentials.
 
 <a id="step-2-download"></a>
 
@@ -138,7 +138,7 @@ The configuration is UTF-8 `KEY=value` data without shell variable expansion. Do
 
 <a id="step-5-setup"></a>
 
-### Step 5: initialize and complete personal authorization
+### Step 5: initialize and verify sign-in to your own Telegram account
 
 Save `.env`, then run:
 
@@ -146,7 +146,7 @@ Save `.env`, then run:
 ./tg-setup
 ```
 
-This command connects to Telegram. If the session is not authorized, the program requests a login code and prompts for hidden input. It asks for a 2FA password only if Telegram requires one. Obtain the code through the current Telegram login flow; do not put an old code in `.env`.
+This command connects to Telegram. If your Telegram account is not signed in through this session, the program requests a login code and prompts for hidden input. It asks for a 2FA password only if Telegram requires one. Obtain the code through the current Telegram login flow; do not put an old code in `.env`.
 
 **Possible prompts, not commands:**
 
@@ -162,7 +162,7 @@ Telegram 兩步驗證密碼（隱藏輸入）：
 
 Valid sessions are reused. No password prompt appears if 2FA is not enabled or requested. Existing fixed settings are not asked again, and OTPs are not persisted.
 
-Once authorized, setup creates the bot, privately saves its Token, checks its identity using `getMe`, obtains your private Chat ID, saves route `PERSONAL`, sends `/start` using your user session, and sends one initialization notification through the Bot API. The bot does not need its own `/start` reply handler; setup checks outgoing delivery and the notification receipt.
+Once your Telegram account is signed in, setup creates the bot, privately saves its Token, checks its identity using `getMe`, obtains your private Chat ID, saves route `PERSONAL`, sends `/start` using your user session, and sends one initialization notification through the Bot API. The bot does not need its own `/start` reply handler; setup checks outgoing delivery and the notification receipt.
 
 If [BotFather](https://core.telegram.org/bots/features#botfather) **explicitly rejects the username as occupied or unavailable**, interactive setup checks up to five alternatives. You can approve a checked suggestion, enter another username, or cancel with `q`. Declining a suggestion still lets you choose your own name. Custom input is format-checked locally and then checked with Telegram. Only after your approval and a successful check does setup save `TG_SETUP_BOT_USERNAME` to `.env` and its journal and retry creation.
 
@@ -296,7 +296,7 @@ Keep the original configuration path, state directory, bot, route, and journal. 
 | Missing keys, invalid values, or permissions | Correct listed keys in Step 4. Secret files must be 0600 or stricter; configuration and ancestor paths must not use symlinks. |
 | Explicit unavailable/occupied username; `username_selection_required` | Interactive setup lets you approve a checked suggestion, enter a valid name, or cancel. In non-interactive mode update `.env` or `--bot-username` and rerun. Failed/rate-limited checks do not prove availability. |
 | Other `creation_rejected` | Inspect the actual BotFather rejection; bot-count limits and other causes are not username conflicts. |
-| Incorrect/expired code, cancellation, or failed 2FA | Verify your account and rerun in a terminal supporting hidden input. No bot is created before authorization. |
+| Incorrect/expired code, cancellation, or failed 2FA | Verify your account and rerun in a terminal supporting hidden input. No bot is created before your account sign-in verification is complete. |
 | `creation_pending` / unknown creation result | Verify the bot in BotFather, place that bot's Token in private `TG_SETUP_BOT_TOKEN`, keep a matching username, and resume. Do not blindly issue another `/newbot`. |
 | Token saved, but verification or route writing failed | Rerun using the same paths and bot. Manually resolve identity conflicts; do not revoke or create again. |
 | `start_pending` / `start_unknown` | Manually send `/start` to this bot from Telegram, then run `./tg-setup --confirm-started`. |
@@ -311,7 +311,7 @@ Keep the original configuration path, state directory, bot, route, and journal. 
 
 Setup reads fixed settings only from the selected configuration file. Precedence is `--env-path`, then `TG_CONFIG_ENV_PATH`, then repository `.env`. For state it is `--state-dir`, then `TG_CONFIG_STATE_DIR`, then `~/.local/state/telegram-bot-setup`. Existing users can copy the contents of repository `.state` to the new location, or set `TG_CONFIG_STATE_DIR` to the old directory. `--bot-name`, `--bot-username`, and `--route` override corresponding non-secret settings.
 
-With a valid session, `--non-interactive` avoids interactive input. Without authorization it exits immediately without requesting a code or waiting on stdin. Explicit username rejection also avoids interactive selection. Incomplete setup exits nonzero; successful setup or a complete local record exits zero.
+With a valid session, `--non-interactive` avoids interactive input. Without a signed-in session it exits immediately without requesting a code or waiting on stdin. Explicit username rejection also avoids interactive selection. Incomplete setup exits nonzero; successful setup or a complete local record exits zero.
 
 To use another configuration file:
 
@@ -325,12 +325,12 @@ TG_CONFIG_ENV_PATH=./private.env ./tg-message 'My private notification' PERSONAL
 
 `.env` stores credentials. Adjacent `<config-filename>.routes.json` maps routes to key names. The session is `<state-dir>/botfather_user.session`. The Token-containing journal is `<state-dir>/setup/<SHA256-of-absolute-config-path>/journal.json`. Dedicated directories are 0700; secret files are 0600 or stricter. Configuration and route locks are adjacent to the configuration file. Cross-copy account locks use `${XDG_STATE_HOME:-~/.local/state}/tg-config-public/setup-account-locks/<user_id>.lock`. Never commit these files. Account for absolute-path binding when backing up or moving configured copies.
 
-Legacy account/provisioning commands also tighten owned Session parent directories to 0700 and Session files plus SQLite sidecars to 0600, refusing unsafe paths or permission failures. Choose a dedicated Session directory. Their CLI errors use shared credential redaction; user-session sends require a positive integer message ID and stop without automatic resending when no valid receipt is returned. Legacy configuration writes update duplicate keys consistently with atomic 0600 replacement. Receiver download retries stop on permanent 4xx errors (except 429) or after 20 transient failures (about 70 minutes of backoff); HTTP errors take precedence over contradictory JSON. Existing receiver databases remain compatible. See the [receiving guide](docs/RECEIVING.md).
+Legacy account/provisioning commands also tighten Session parent directories owned by the OS user running the command to 0700 and Session files plus SQLite sidecars to 0600, refusing unsafe paths or permission failures. Choose a dedicated Session directory. Their CLI errors use shared credential redaction; user-session sends require a positive integer message ID and stop without automatic resending when no valid receipt is returned. Legacy configuration writes update duplicate keys consistently with atomic 0600 replacement. Receiver download retries stop on permanent 4xx errors (except 429) or after 20 transient failures (about 70 minutes of backoff); HTTP errors take precedence over contradictory JSON. Existing receiver databases remain compatible. See the [receiving guide](docs/RECEIVING.md).
 
 See [advanced usage, currently in Traditional Chinese](TG_USAGE.md) for Python/CLI, image, route, and rotation details. `bot-updates` must not compete with an active consumer using the same Token.
 
 ## Validation and references
 
-The 298 offline tests for 0.1.0 are historical results. Current 0.1.1 validation, reproduction commands, and limits are in [the validation document, in Traditional Chinese](docs/VALIDATION.md). Production services and fresh real OTP/2FA authorization still require validation in your own environment. See [SECURITY.md, in Traditional Chinese](SECURITY.md) for reporting and credential protection.
+The 298 offline tests for 0.1.0 are historical results. Current 0.1.1 validation, reproduction commands, and limits are in [the validation document, in Traditional Chinese](docs/VALIDATION.md). Production services and fresh real OTP/2FA sign-in verification still require validation in your own environment. See [SECURITY.md, in Traditional Chinese](SECURITY.md) for reporting and credential protection.
 
 Fixed sources and licenses are in the [reference report](docs/REFERENCE_REPORT.md) and [third-party notices](THIRD_PARTY_NOTICES.md), currently in Traditional Chinese. Official behavior references: [getMe](https://core.telegram.org/bots/api#getme), [sendMessage](https://core.telegram.org/bots/api#sendmessage), and [Telethon sign-in](https://docs.telethon.dev/en/stable/basic/signing-in.html).

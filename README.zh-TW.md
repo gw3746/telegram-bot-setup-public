@@ -92,7 +92,7 @@ BotFather 工具提供 `request-login-code`、`complete-login`、`create-bot`、
 
 主帳號工具預設設定為本倉庫 `.env`，Session、登入狀態、Bot 更新 offset 與 Token 輪換紀錄在 `~/.local/state/telegram-bot-setup`。`TG_CONFIG_STATE_DIR` 可覆寫此狀態根目錄，包含 `tg-cli-bot-updates.json` 與 `token_rotation/`、`receiver/` 子目錄；各工具仍可依介面使用 `--env-path`、`--session-path`、`--login-state-path`、`--state-dir` 覆寫。舊版使用者可把本倉庫 `.state` 的內容複製到新位置，或設定 `TG_CONFIG_STATE_DIR` 指回舊目錄。設定、Session、offset 及 Token 輪換對照均不可提交。已登入帳號可用 `tg history me --limit 1` 讀 Saved Messages 最後一筆。
 
-舊帳號及 provision 入口將所用帳號的 Session 目錄收緊至 0700、Session 與 SQLite 附屬檔至 0600，不安全路徑或權限失敗會停止操作；請使用專用目錄。CLI 診斷遮蔽當次憑證。user-session 發送須有含正整數 ID 的訊息物件，缺回執非零退出、不印 `MESSAGE_SENT` 且不自動重送；設定更新一致處理全部同名鍵並維持原子 0600 寫入。收件下載遇永久 4xx 拒絕（429 除外）或累計 20 次暫時失敗（約 70 分鐘退避）即停止，HTTP 拒絕優先於矛盾 JSON，既有 queue DB 可繼續用；詳見[收件指南](docs/RECEIVING.md)。
+舊帳號及 provision 入口將執行程式的作業系統使用者所擁有的 Session 目錄收緊至 0700、Session 與 SQLite 附屬檔至 0600，不安全路徑或權限失敗會停止操作；請使用專用目錄。CLI 診斷遮蔽當次憑證。user-session 發送須有含正整數 ID 的訊息物件，缺回執非零退出、不印 `MESSAGE_SENT` 且不自動重送；設定更新一致處理全部同名鍵並維持原子 0600 寫入。收件下載遇永久 4xx 拒絕（429 除外）或累計 20 次暫時失敗（約 70 分鐘退避）即停止，HTTP 拒絕優先於矛盾 JSON，既有 queue DB 可繼續用；詳見[收件指南](docs/RECEIVING.md)。
 
 ## 圖片與 PDF 收件
 

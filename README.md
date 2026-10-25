@@ -12,8 +12,8 @@ The project provides Bot API notifications, Telethon account tools, and bot crea
 
 | What you have | Where to start |
 | --- | --- |
-| No personal API credentials yet | [Download](INSTALL_GUIDE.md#step-2-download) and [install](INSTALL_GUIDE.md#step-3-install) first, then fill in `.env` later. Account history access and automatic bot creation remain unavailable until credentials are ready and sign-in verification is complete. |
-| An existing Bot Token and Chat ID, without personal API credentials | Follow the [existing-bot example](INSTALL_GUIDE.md#existing-bot-only). Set `TG_BOT_TOKEN` and `TG_CHAT_ID` in `telegram-bot-setup-public/.env` to use the `DEFAULT` route. This does not create a bot. |
+| No API credentials for your own Telegram account yet | [Download](INSTALL_GUIDE.md#step-2-download) and [install](INSTALL_GUIDE.md#step-3-install) first, then fill in `.env` later. Account history access and automatic bot creation remain unavailable until credentials are ready and sign-in verification is complete. |
+| An existing Bot Token and Chat ID, without API credentials for your own Telegram account | Follow the [existing-bot example](INSTALL_GUIDE.md#existing-bot-only). Set `TG_BOT_TOKEN` and `TG_CHAT_ID` in `telegram-bot-setup-public/.env` to use the `DEFAULT` route. This does not create a bot. |
 | You want the program to create a bot | Follow the seven steps below, supply `TG_API_ID` and `TG_API_HASH` in [your private `.env`](INSTALL_GUIDE.md#step-4-config), and complete sign-in verification for your own Telegram account. |
 
 ## Use cases: separate bots for separate tasks
@@ -35,7 +35,7 @@ These seven steps automatically create a private notification bot on Linux. See 
 
 | Step | Action |
 | --- | --- |
-| 1. [Obtain personal API credentials](INSTALL_GUIDE.md#step-1-api) | Register a Telegram account first. Open [my.telegram.org/apps](https://my.telegram.org/apps) in a phone or computer browser and use **API development tools** to obtain `API_ID` and `API_HASH` together. The website login code arrives in the Telegram app. No Telegram Desktop is needed. You may download and install before obtaining credentials. |
+| 1. [Obtain API credentials for your own Telegram account](INSTALL_GUIDE.md#step-1-api) | Register a Telegram account first. Open [my.telegram.org/apps](https://my.telegram.org/apps) in a phone or computer browser and use **API development tools** to obtain `API_ID` and `API_HASH` together. The website login code arrives in the Telegram app. No Telegram Desktop is needed. You may download and install before obtaining credentials. |
 | 2. [Download](INSTALL_GUIDE.md#step-2-download) | Clone `telegram-bot-setup-public` on Linux. |
 | 3. [Install dependencies](INSTALL_GUIDE.md#step-3-install) | Run `./tg-install` in the project directory. In an interactive terminal, choose the display language before installation. Installation does not operate Telegram. |
 | 4. [Fill in private settings](INSTALL_GUIDE.md#step-4-config) | Set `TG_API_ID`, `TG_API_HASH`, `TG_PHONE`, your bot display name, a unique username, and route `PERSONAL` in `.env`. Display names may repeat. Protect the file; an existing Chat ID is not needed. |
@@ -92,7 +92,7 @@ Rotation preflights explicit sources, creates a separate private recovery direct
 
 Account tools default to repository `.env`, with sessions, login state, update offsets, and Token rotation records under `~/.local/state/telegram-bot-setup`. `TG_CONFIG_STATE_DIR` overrides this state root, including `tg-cli-bot-updates.json` and the `token_rotation/` and `receiver/` subdirectories; tools retain their `--env-path`, `--session-path`, `--login-state-path`, and `--state-dir` overrides where supported. Existing users can copy the contents of repository `.state` to the new location, or set `TG_CONFIG_STATE_DIR` to the old directory. Never commit configuration, sessions, offsets, or Token rotation mappings. A signed-in account can read its latest Saved Messages entry with `tg history me --limit 1`.
 
-Legacy account and provisioning tools tighten owned Session directories to 0700 and Session files, including SQLite sidecars, to 0600; unsafe paths or permission failures stop the operation. Use a dedicated Session directory. CLI diagnostics redact the current credentials. User-session sends require a message object with a positive integer ID; a missing receipt exits nonzero without `MESSAGE_SENT` or automatic resending. Configuration updates handle all duplicate keys consistently and retain atomic 0600 writes. Receiver download jobs stop on permanent 4xx rejections (except 429) or after 20 transient failures (about 70 minutes of backoff); HTTP rejection codes override conflicting JSON and existing queue databases remain compatible. See [receiving details](docs/RECEIVING.md).
+Legacy account and provisioning tools tighten Session directories owned by the OS user running the command to 0700 and Session files, including SQLite sidecars, to 0600; unsafe paths or permission failures stop the operation. Use a dedicated Session directory. CLI diagnostics redact the current credentials. User-session sends require a message object with a positive integer ID; a missing receipt exits nonzero without `MESSAGE_SENT` or automatic resending. Configuration updates handle all duplicate keys consistently and retain atomic 0600 writes. Receiver download jobs stop on permanent 4xx rejections (except 429) or after 20 transient failures (about 70 minutes of backoff); HTTP rejection codes override conflicting JSON and existing queue databases remain compatible. See [receiving details](docs/RECEIVING.md).
 
 ## Receiving images and PDFs
 

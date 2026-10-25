@@ -10,7 +10,7 @@
 
 ## 發現憑證外洩
 
-Bot Token 視同密碼。若外洩，先透過官方 BotFather 撤銷／重發，再同步明確使用它的設定與 consumer；刪檔或改成 private 不能讓舊 Token 失效。Session 外洩時請用 Telegram 官方登入裝置管理處理對應授權。
+Bot Token 視同密碼。若外洩，先透過官方 BotFather 撤銷／重發，再同步明確使用它的設定與 consumer；刪檔或改成 private 不能讓舊 Token 失效。Session 外洩時，請在 Telegram 官方登入裝置管理中終止對應登入工作階段。
 
 輪換部分失敗時依工具輸出的 `RECOVERY_DIR` 及受保護 journal 人工核對；舊 Token 可能已失效，不把設定備份當作可用的自動回滾。不要自動重試結果不明的建立、撤銷或通知。
 
@@ -18,7 +18,7 @@ Bot Token 視同密碼。若外洩，先透過官方 BotFather 撤銷／重發�
 
 設定保留在 `.env` 或明確指定的私有檔案，0600 或更窄；Session、登入狀態、Bot 更新 offset、Token 輪換紀錄及收件狀態預設保存在 `~/.local/state/telegram-bot-setup`，可由 `TG_CONFIG_STATE_DIR` 覆寫根目錄，各工具的個別路徑參數仍優先。Session／狀態目錄 0700。舊版使用者可把 repo 內 `.state` 的內容複製到新位置，或設定 `TG_CONFIG_STATE_DIR` 指回舊目錄；遷移及備份副本同樣須保護憑證。不要提交這些檔案或把秘密放進命令列。自動測試使用合成資料，根目錄 conftest 阻擋真實 requests／urllib／socket；CI 不需要 Telegram 憑證。
 
-舊帳號 CLI 與 provision 在建立及使用 Session 前後，會把本人擁有的 Session 父目錄收緊至 0700，Session 與 SQLite 附屬檔收緊至 0600；不安全的連結、非本人檔案或無法收緊權限時拒絕操作。請使用專用狀態目錄，避免把 Session 指向共用目錄。錯誤診斷沿用共用去敏，遮蔽當次 Token、API hash、電話與密碼；不要以去敏取代秘密管理。
+舊帳號 CLI 與 provision 在建立及使用 Session 前後，會把執行程式的作業系統使用者所擁有的 Session 父目錄收緊至 0700，Session 與 SQLite 附屬檔收緊至 0600；不安全的連結、非該作業系統使用者擁有的檔案或無法收緊權限時拒絕操作。請使用專用狀態目錄，避免把 Session 指向共用目錄。錯誤診斷沿用共用去敏，遮蔽當次 Token、API hash、電話與密碼；不要以去敏取代秘密管理。
 
 本專案包含 Gitleaks 掃描；沒有命中不代表可保證不存在秘密或安全缺陷。發布前仍需檢查實際 Git refs、完整歷史、封裝內容及配置。內部運作報告與現場設定不屬公開候選版內容。
 

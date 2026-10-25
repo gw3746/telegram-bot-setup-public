@@ -101,9 +101,9 @@ def main(argv=None, *, runner=None, project_dir=None):
 
 @language_errors
 def setup_main(argv=None, *, project_dir=None, executor=None):
-    """保留 stdin／TTY，以專案環境執行本人授權流程。
+    """保留 stdin／TTY，以專案環境完成您自己的 Telegram 帳號登入驗證。
 
-Preserve stdin/TTY and run personal authorization in the project environment."""
+Preserve stdin/TTY and verify sign-in to your own Telegram account in the project environment."""
     arguments = list(sys.argv[1:] if argv is None else argv)
     root = Path(project_dir).resolve() if project_dir else ROOT
     try:

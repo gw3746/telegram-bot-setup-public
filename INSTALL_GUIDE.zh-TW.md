@@ -2,7 +2,7 @@
 
 [English](INSTALL_GUIDE.md) | **正體中文**
 
-先選擇符合目前資料的路徑。程式可以在沒有 API_ID／API_HASH 時先完成下載與安裝；已有 Bot Token，也可以直接使用通知功能。由程式代為建立 Bot 的路徑，需要準備帳號 API 資料並完成必要本人授權。
+先選擇符合目前資料的路徑。程式可以在沒有 API_ID／API_HASH 時先完成下載與安裝；已有 Bot Token，也可以直接使用通知功能。由程式代為建立 Bot 的路徑，需要準備帳號 API 資料並完成您自己的 Telegram 帳號登入驗證。
 
 申請 API 資料可用手機瀏覽器完成；下載、安裝及執行本專案則在 Linux 終端進行。無須 Telegram Desktop，也沒有強制設定精靈。
 
@@ -11,10 +11,10 @@
 | 目前情況 | 要走哪條路 |
 | --- | --- |
 | 還沒有 API 資料，先裝程式 | 先做 [Step 2 下載](#step-2-download)、[Step 3 安裝](#step-3-install)，可先建立 [Step 4 的 `.env`](#step-4-config)；之後取得 API 再回填，不必重新安裝。此時尚未自動建立 Bot。 |
-| 要讓程式自動建立 Bot | 依下方七步 Example，API 資料及必要授權備妥後執行 setup。 |
+| 要讓程式自動建立 Bot | 依下方七步 Example，API 資料備妥後執行 setup，並在執行時完成自己 Telegram 帳號的登入驗證。 |
 | 已有 Bot Token，或願意自行在 BotFather 建 Bot | 使用 [Example B：純 Bot 通知](#existing-bot-only)，不必申請 API_ID／API_HASH。 |
 
-API_ID／API_HASH 是本人帳號的 API 資料；Bot Token 是特定 Bot 的憑證，兩者不互相代替。
+API_ID／API_HASH 是您自己的 Telegram 帳號申請的 API 資料；Bot Token 是特定 Bot 的憑證，兩者不互相代替。
 
 <a id="example-personal-bot"></a>
 
@@ -38,13 +38,13 @@ API_ID／API_HASH 是本人帳號的 API 資料；Bot Token 是特定 Bot 的憑
 先自行使用官方 Telegram App 註冊帳號，再依 [Telegram 官方申請說明](https://core.telegram.org/api/obtaining_api_id) 操作：
 
 1. 用手機或電腦瀏覽器開啟 [https://my.telegram.org/apps](https://my.telegram.org/apps)。
-2. 輸入本人 Telegram 帳號的國際格式電話；到 Telegram App 查收登入碼，再回到瀏覽器登入。這個官方網頁登入碼不是以 SMS 傳送。
+2. 輸入您自己 Telegram 帳號的國際格式電話；到 Telegram App 查收登入碼，再回到瀏覽器登入。這個官方網頁登入碼不是以 SMS 傳送。
 3. 進入 **API development tools**，填表建立應用程式。
 4. **API_ID 與 API_HASH 會在同一處、同一次申請流程中一起取得，不需要分開申請。**保留這兩項資料，稍後填入自己的 `.env`。
 
-這是官方網頁的申請流程，手機即可完成，無須電腦或 Telegram Desktop。官方網頁登入與稍後本專案的 Session 授權是不同步驟；取得 API 資料後，首次執行仍可能需要登入碼及 2FA。
+這是官方網頁的申請流程，手機即可完成，無須電腦或 Telegram Desktop。官方網頁登入與稍後本專案的 Telegram 帳號 Session 登入驗證是不同步驟；取得 API 資料後，首次執行仍可能需要登入碼及 2FA。
 
-還沒申請時，可以先完成 Step 2、Step 3 的下載與安裝，再回來申請。自動建 Bot 的 Step 5 仍會檢查 API 資料及授權，不會借用別人的帳號憑證。
+還沒申請時，可以先完成 Step 2、Step 3 的下載與安裝，再回來申請。自動建 Bot 的 Step 5 仍需核對您自己的 API 資料與登入驗證，不會借用別人的帳號憑證。
 
 <a id="step-2-download"></a>
 
@@ -104,7 +104,7 @@ cp -n .env.example .env
 chmod 600 .env
 ```
 
-複製使用不覆蓋既有檔案的方式。若已有 `.env`，略過複製，直接用文字編輯器修改原檔；設定應是本人的一般檔案，不使用 symlink。
+複製使用不覆蓋既有檔案的方式。若已有 `.env`，略過複製，直接用文字編輯器修改原檔；設定檔應是執行程式的作業系統使用者所擁有的一般檔案，不使用 symlink。
 
 打開 `.env`，先填完最上方首次初始化區。**下面是設定檔內容示例，不是終端命令；尖括號文字必須換成你自己的資料：**
 
@@ -121,7 +121,7 @@ TG_SETUP_ROUTE=PERSONAL
 | --- | --- |
 | `TG_API_ID` | Step 1 取得的數字 API_ID，填寫時移除尖括號。 |
 | `TG_API_HASH` | Step 1 同時取得的 32 位十六進位 API_HASH。 |
-| `TG_PHONE` | 本人 Telegram 電話，含國碼；只有有效 Session 已存在時可不填。 |
+| `TG_PHONE` | 您自己 Telegram 帳號的電話，含國碼；只有有效 Session 已存在時可不填。 |
 | `TG_SETUP_BOT_NAME` | 自訂顯示名稱，1–64 字元、不含換行，可與其他 Bot 重複。示例為 `My Personal Notice`。也可用 `--bot-name` 覆寫。 |
 | `TG_SETUP_BOT_USERNAME` | 唯一公開 username：5–32 字元、英文字母開頭，限英文／數字／底線，以 `bot` 結尾；也可用 `--bot-username` 覆寫。 |
 | `TG_SETUP_ROUTE` | 本例使用 `PERSONAL`；這是程式內選用新 Bot 的路由名稱。 |
@@ -136,7 +136,7 @@ TG_SETUP_ROUTE=PERSONAL
 
 <a id="step-5-setup"></a>
 
-### Step 5：執行初始化，完成必要本人授權
+### Step 5：執行初始化，完成自己 Telegram 帳號的登入驗證
 
 填好並保存 `.env` 後，在終端執行：
 
@@ -144,7 +144,7 @@ TG_SETUP_ROUTE=PERSONAL
 ./tg-setup
 ```
 
-這個命令會實際連線 Telegram。Session 尚未授權時，程式傳送登入碼並在終端隱藏提示輸入；服務要求 2FA 才再提示密碼。請依 Telegram 當次登入流程取得驗證碼，不要把舊碼寫進 `.env`。
+這個命令會實際連線 Telegram。Session 尚未完成 Telegram 帳號登入驗證時，程式傳送登入碼並在終端隱藏提示輸入；服務要求 2FA 才再提示密碼。請依 Telegram 當次登入流程取得驗證碼，不要把舊碼寫進 `.env`。
 
 **可能出現的終端提示示意，不是命令，也不用照抄：**
 
@@ -155,7 +155,7 @@ Telegram 兩步驗證密碼（隱藏輸入）：
 
 有效 Session 會直接重用，沒有啟用或沒有被要求 2FA 時不會出現密碼提示。固定設定已填好就不重問，OTP 不持久保存。
 
-授權具備後，程式會建立 Bot、先私有保存 Token、用 getMe 核對身份、取得你的私人 Chat ID、保存 `PERSONAL` 路由、以 user session 傳 `/start`，再由 Bot API 發一次初始化測試通知。Bot 沒有回覆 `/start` 的程式也可完成，因為這裡核對的是送出與通知回執。
+Telegram 帳號登入驗證完成後，程式會建立 Bot、先私有保存 Token、用 getMe 核對身份、取得你的私人 Chat ID、保存 `PERSONAL` 路由、以 user session 傳 `/start`，再由 Bot API 發一次初始化測試通知。Bot 沒有回覆 `/start` 的程式也可完成，因為這裡核對的是送出與通知回執。
 
 若 [BotFather](https://core.telegram.org/bots/features#botfather) **明確拒絕 username 已占用或不可用**，互動 setup 才會查核最多五個候選，讓你選擇採用已查核建議、另填自己想要的 username，或輸入 `q` 取消。回答不採用建議後也可另填名稱；手填名稱會先做本機格式驗證，再向 Telegram 查核。只有你同意且查核成功後，程式才將新 `TG_SETUP_BOT_USERNAME` 寫回 `.env` 與 journal，然後重試建立。查核依 [Telegram `bots.checkUsername`](https://core.telegram.org/method/bots.checkUsername)；查核不保留 username，最後仍以 BotFather 建立成功為準。若候選在建立前被搶先使用，互動模式會再次詢問；不會未經確認自行換名。
 
@@ -225,7 +225,7 @@ message_id=42
 
 本機紀錄完整時會顯示 `status=recorded_complete`；它不連線，不能當成即時線上驗收。已完成後普通重跑 `./tg-setup` 會連線核對身份及路由，不重建 Bot、不重寫路由、不重送通知。明確加 `--test-again` 才會另發測試。
 
-完成通知初始化後，若還想用同一 Bot 收取圖片與 PDF，可另依[收件指南](docs/RECEIVING.md)設定 `./tg-receive`；這不是上述七步的必做項。收件須指定正整數的私人聊天傳送者 `user_id` 白名單（本人私人聊天通常與 Chat ID 相同），並確保該 Bot 只有一個 `getUpdates` consumer。使用已設定的 `DEFAULT` 或已建的 `PERSONAL` Token 即可，不需為純 Bot 收件再申請帳號 API 資料。
+完成通知初始化後，若還想用同一 Bot 收取圖片與 PDF，可另依[收件指南](docs/RECEIVING.md)設定 `./tg-receive`；這不是上述七步的必做項。收件須指定正整數的私人聊天傳送者 `user_id` 白名單（傳送者與 Bot 的一對一私人聊天中，user_id 通常與該聊天的 Chat ID 相同），並確保該 Bot 只有一個 `getUpdates` consumer。使用已設定的 `DEFAULT` 或已建的 `PERSONAL` Token 即可，不需為純 Bot 收件再申請帳號 API 資料。
 
 ## 另一種順序：先填設定，再安裝
 
@@ -281,7 +281,7 @@ TG_CHAT_ID=<YOUR_PRIVATE_CHAT_ID>
 | 缺鍵、格式或權限錯誤 | 回 Step 4 修正列出的鍵；秘密檔案須 0600 或更窄，設定及祖先不使用 symlink。 |
 | username 明確已用／不可用、`username_selection_required` | 互動 setup 可選查核後的建議、自行輸入合法名稱或取消；非互動模式改 `.env` 或 `--bot-username` 後重跑。若查核失敗或限流，先處理錯誤，不把候選當成已可用。 |
 | 其他 `creation_rejected` | 核對 BotFather 的實際拒絕原因；Bot 數量上限等情況不當成重名。 |
-| 登入碼錯誤、過期、取消或 2FA 失敗 | 核對本人帳號，在可隱藏輸入的終端重跑；授權前不會建 Bot。 |
+| 登入碼錯誤、過期、取消或 2FA 失敗 | 核對您自己的 Telegram 帳號，在可隱藏輸入的終端重跑；帳號登入驗證完成前不會建 Bot。 |
 | `creation_pending`／建立結果不明 | 到 BotFather 核對，把已建立的該 Bot Token 填入私有檔案 `TG_SETUP_BOT_TOKEN`，維持相符 username 再接續，不盲目再 `/newbot`。 |
 | Token 已存，驗證或路由寫入失敗 | 同路徑重跑，從原 Bot 接續；身份衝突先人工核對，不 revoke、不再建 Bot。 |
 | `start_pending`／`start_unknown` | 手機向本次 Bot 手動傳 `/start`，確認後執行 `./tg-setup --confirm-started`。 |
@@ -294,7 +294,7 @@ TG_CHAT_ID=<YOUR_PRIVATE_CHAT_ID>
 
 ## 進階設定與資料保存
 
-setup 固定資料只讀指定設定檔。`--env-path` 優先於 `TG_CONFIG_ENV_PATH`，再來是 repository `.env`；`--state-dir` 優先於 `TG_CONFIG_STATE_DIR`，再來是 `~/.local/state/telegram-bot-setup`。舊版使用者可把 repository `.state` 的內容複製到新位置，或設定 `TG_CONFIG_STATE_DIR` 指回舊目錄。`--bot-name`、`--bot-username`、`--route` 可覆寫對應非秘密檔案值。有效 Session 可加 `--non-interactive`，未授權會立即退出、不發登入碼、不等 stdin；username 明確被拒也不進入互動選擇。未完成回非零，成功或本機完整紀錄回零。
+setup 固定資料只讀指定設定檔。`--env-path` 優先於 `TG_CONFIG_ENV_PATH`，再來是 repository `.env`；`--state-dir` 優先於 `TG_CONFIG_STATE_DIR`，再來是 `~/.local/state/telegram-bot-setup`。舊版使用者可把 repository `.state` 的內容複製到新位置，或設定 `TG_CONFIG_STATE_DIR` 指回舊目錄。`--bot-name`、`--bot-username`、`--route` 可覆寫對應非秘密檔案值。有效 Session 可加 `--non-interactive`，Session 尚未登入會立即退出、不發登入碼、不等 stdin；username 明確被拒也不進入互動選擇。未完成回非零，成功或本機完整紀錄回零。
 
 使用別的設定檔時：
 
@@ -308,7 +308,7 @@ TG_CONFIG_ENV_PATH=./private.env ./tg-message '我的私人通知' PERSONAL NONE
 
 `.env` 保存憑證，相鄰 `<設定檔名>.routes.json` 保存路由與鍵名對應。Session 在 `<state-dir>/botfather_user.session`；含 Token 的 journal 在 `<state-dir>/setup/<設定絕對路徑 SHA256>/journal.json`。專用目錄 0700、秘密檔案 0600 或更窄，設定與路由鎖與設定相鄰。跨副本帳號鎖在 `${XDG_STATE_HOME:-~/.local/state}/tg-config-public/setup-account-locks/<user_id>.lock`。勿提交這些檔案；備份或搬移時要考慮原路徑綁定。
 
-舊帳號／provision 入口亦把本人 Session 父目錄收緊為 0700，Session 與 SQLite 附屬檔為 0600；不安全路徑或權限失敗會拒絕操作，請使用專用目錄。CLI 錯誤經共用憑證去敏；user-session 發送須有正整數訊息 ID，缺有效回執即停止且不自動重送。舊設定寫回一致處理重複鍵，維持原子 0600 替換。收件下載遇永久 4xx（429 除外）或 20 次暫時失敗（約 70 分鐘退避）即停止，HTTP 錯誤優先於矛盾 JSON，既有收件 DB 可繼續用；詳見[收件指南](docs/RECEIVING.md)。
+舊帳號／provision 入口亦把執行程式的作業系統使用者所擁有的 Session 父目錄收緊為 0700，Session 與 SQLite 附屬檔為 0600；不安全路徑或權限失敗會拒絕操作，請使用專用目錄。CLI 錯誤經共用憑證去敏；user-session 發送須有正整數訊息 ID，缺有效回執即停止且不自動重送。舊設定寫回一致處理重複鍵，維持原子 0600 替換。收件下載遇永久 4xx（429 除外）或 20 次暫時失敗（約 70 分鐘退避）即停止，HTTP 錯誤優先於矛盾 JSON，既有收件 DB 可繼續用；詳見[收件指南](docs/RECEIVING.md)。
 
 更多 Python／CLI、圖片、既有路由與輪換用法見 [進階操作對照](TG_USAGE.md)。`bot-updates` 不可與同 Token 的現用 consumer 競爭更新。
 
