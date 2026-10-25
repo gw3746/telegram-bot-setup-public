@@ -4,7 +4,7 @@
 
 Currently a **0.1.1 public preview**. Refer to main for current features and validation results.
 
-Prepare your Telegram `API_ID` and `API_HASH`, fill in your private settings, and complete the required personal authorization. The program can then create a private notification bot, save its credentials, obtain your Chat ID, register a route, and verify the first notification. Telegram Desktop is not required.
+Prepare your Telegram `API_ID` and `API_HASH`, fill in your private settings, and complete the required sign-in verification for your own Telegram account. This verifies your own Telegram account; no approval from the project author is needed. The program can then create a private notification bot, save its credentials, obtain your Chat ID, register a route, and verify the first notification. Telegram Desktop is not required.
 
 The project provides Bot API notifications, Telethon account tools, and bot creation/token rotation through BotFather. Original project code is [MIT licensed](LICENSE); external references and dependencies retain their own licenses. See [third-party notices](THIRD_PARTY_NOTICES.md), [validation and limits](docs/VALIDATION.md), and [security reporting](SECURITY.md). Those supporting documents currently remain in Traditional Chinese.
 
@@ -12,9 +12,9 @@ The project provides Bot API notifications, Telethon account tools, and bot crea
 
 | What you have | Where to start |
 | --- | --- |
-| No personal API credentials yet | [Download](INSTALL_GUIDE.md#step-2-download) and [install](INSTALL_GUIDE.md#step-3-install) first, then fill in `.env` later. Account history access and automatic bot creation remain unavailable until credentials and authorization are ready. |
+| No personal API credentials yet | [Download](INSTALL_GUIDE.md#step-2-download) and [install](INSTALL_GUIDE.md#step-3-install) first, then fill in `.env` later. Account history access and automatic bot creation remain unavailable until credentials are ready and sign-in verification is complete. |
 | An existing Bot Token and Chat ID, without personal API credentials | Follow the [existing-bot example](INSTALL_GUIDE.md#existing-bot-only). Set `TG_BOT_TOKEN` and `TG_CHAT_ID` in `telegram-bot-setup-public/.env` to use the `DEFAULT` route. This does not create a bot. |
-| You want the program to create a bot | Follow the seven steps below, supply `TG_API_ID` and `TG_API_HASH` in [your private `.env`](INSTALL_GUIDE.md#step-4-config), and complete personal authorization. |
+| You want the program to create a bot | Follow the seven steps below, supply `TG_API_ID` and `TG_API_HASH` in [your private `.env`](INSTALL_GUIDE.md#step-4-config), and complete sign-in verification for your own Telegram account. |
 
 ## Use cases: separate bots for separate tasks
 
@@ -49,7 +49,7 @@ Official credential instructions: [Obtaining api_id](https://core.telegram.org/a
 
 | Entry point | Purpose |
 | --- | --- |
-| `tg-install` / `tg-setup` | Install dependencies; explicitly authorize your account, create or resume a bot, register a route, and test notification delivery. |
+| `tg-install` / `tg-setup` | Install dependencies; verify sign-in to your own Telegram account, create or resume a bot, register a route, and test notification delivery. |
 | `tg_notify.py` / `tg-message` | Python text/image notifications; text notifications from the CLI. |
 | `sys_notify.py` | System notifications, plain text by default. |
 | `tg` / `tg_cli.py` | Account status, dialogs, history, recent messages, media downloads, and new bot updates. |
@@ -90,7 +90,7 @@ BotFather tools provide `request-login-code`, `complete-login`, `create-bot`, an
 
 Rotation preflights explicit sources, creates a separate private recovery directory for each run, backs up and verifies files, and journals progress before revocation. It saves and verifies a new Token before calling `getMe`, then updates files individually while recording their status. Partial failure stops processing other bots and prints `RECOVERY_DIR`; use protected records and BotFather for manual recovery. Do not assume an old Token still works. External revocation and multiple file updates are not an atomic transaction. See [rotation instructions, in Traditional Chinese](TG_USAGE.md#原有分段工具與輪換-token) and [SECURITY.md, in Traditional Chinese](SECURITY.md).
 
-Account tools default to repository `.env`, with sessions, login state, update offsets, and Token rotation records under `~/.local/state/telegram-bot-setup`. `TG_CONFIG_STATE_DIR` overrides this state root, including `tg-cli-bot-updates.json` and the `token_rotation/` and `receiver/` subdirectories; tools retain their `--env-path`, `--session-path`, `--login-state-path`, and `--state-dir` overrides where supported. Existing users can copy the contents of repository `.state` to the new location, or set `TG_CONFIG_STATE_DIR` to the old directory. Never commit configuration, sessions, offsets, or Token rotation mappings. An authorized account can read its latest Saved Messages entry with `tg history me --limit 1`.
+Account tools default to repository `.env`, with sessions, login state, update offsets, and Token rotation records under `~/.local/state/telegram-bot-setup`. `TG_CONFIG_STATE_DIR` overrides this state root, including `tg-cli-bot-updates.json` and the `token_rotation/` and `receiver/` subdirectories; tools retain their `--env-path`, `--session-path`, `--login-state-path`, and `--state-dir` overrides where supported. Existing users can copy the contents of repository `.state` to the new location, or set `TG_CONFIG_STATE_DIR` to the old directory. Never commit configuration, sessions, offsets, or Token rotation mappings. A signed-in account can read its latest Saved Messages entry with `tg history me --limit 1`.
 
 Legacy account and provisioning tools tighten owned Session directories to 0700 and Session files, including SQLite sidecars, to 0600; unsafe paths or permission failures stop the operation. Use a dedicated Session directory. CLI diagnostics redact the current credentials. User-session sends require a message object with a positive integer ID; a missing receipt exits nonzero without `MESSAGE_SENT` or automatic resending. Configuration updates handle all duplicate keys consistently and retain atomic 0600 writes. Receiver download jobs stop on permanent 4xx rejections (except 429) or after 20 transient failures (about 70 minutes of backoff); HTTP rejection codes override conflicting JSON and existing queue databases remain compatible. See [receiving details](docs/RECEIVING.md).
 

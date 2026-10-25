@@ -6,15 +6,15 @@
 
 README 與安裝指南均有英文及正體中文版本。程式自有的 CLI 說明、提示、錯誤、通知前綴與收件提示可切換英文或正體中文，訊息分別放在 `languages/en.ini` 與 `languages/zh_TW.ini`；互動安裝先選 `1. 正體中文` 或 `2. English`，首次預設英文。單次可用 `--language zh-TW`／`--language en` 覆寫，亦可設定 `TG_LANGUAGE`；其他工具預設沿用成功安裝後儲存的語言。設定模板註解與程式說明亦有中英對照，部分進階文件仍為正體中文；命令、參數、設定鍵、JSON 欄位與狀態碼不翻譯。詳細優先序、保存方式與訊息檔維護見[語言說明](docs/LANGUAGES.md)。
 
-準備好 Telegram `API_ID` 與 `API_HASH`，依安裝指南填妥設定並完成必要本人授權，即可自動建立私人通知 Bot、保存憑證、取得 Chat ID、設定路由並完成首次通知驗證。無需 Telegram Desktop。
+準備好 Telegram `API_ID` 與 `API_HASH`，依安裝指南填妥設定並完成您自己的 Telegram 帳號登入驗證，即可自動建立私人通知 Bot、保存憑證、取得 Chat ID、設定路由並完成首次通知驗證。這裡指驗證您自己的 Telegram 帳號，無須專案作者核准。無需 Telegram Desktop。
 
 本專案提供 Bot API 通知、Telethon 帳號工具及 BotFather 建立／輪換。自有程式採 [MIT](LICENSE)，外部設計參考及依賴保留各自授權，見 [第三方來源](THIRD_PARTY_NOTICES.md)。支援與驗證範圍見 [測試說明](docs/VALIDATION.md)；安全回報見 [SECURITY.md](SECURITY.md)。
 
 | 目前有什麼 | 可以先做什麼 |
 | --- | --- |
-| 尚未申請本人 API | 可先[下載專案](INSTALL_GUIDE.zh-TW.md#step-2-download)、[安裝相依](INSTALL_GUIDE.zh-TW.md#step-3-install)，之後再到 `.env` 填 API 資料；此時不能用 user session 讀歷史或由程式自動建 Bot。 |
-| 已有 Bot Token 與 Chat ID，沒有本人 API | 可依[既有 Bot 通知 Example](INSTALL_GUIDE.zh-TW.md#existing-bot-only)，在 `telegram-bot-setup-public/.env` 填 `TG_BOT_TOKEN` 與 `TG_CHAT_ID`，直接用 Bot API 的 `DEFAULT` 通知；這條路徑不會自動建 Bot。 |
-| 要由程式自動建 Bot | 走下方七步，在 [`telegram-bot-setup-public/.env`](INSTALL_GUIDE.zh-TW.md#step-4-config) 填本人 `TG_API_ID`／`TG_API_HASH`，並完成必要本人授權。 |
+| 尚未申請自己帳號的 API 資料 | 可先[下載專案](INSTALL_GUIDE.zh-TW.md#step-2-download)、[安裝相依](INSTALL_GUIDE.zh-TW.md#step-3-install)，之後再到 `.env` 填 API 資料；此時不能用 user session 讀歷史或由程式自動建 Bot。 |
+| 已有 Bot Token 與 Chat ID，沒有自己帳號的 API 資料 | 可依[既有 Bot 通知 Example](INSTALL_GUIDE.zh-TW.md#existing-bot-only)，在 `telegram-bot-setup-public/.env` 填 `TG_BOT_TOKEN` 與 `TG_CHAT_ID`，直接用 Bot API 的 `DEFAULT` 通知；這條路徑不會自動建 Bot。 |
+| 要由程式自動建 Bot | 走下方七步，在 [`telegram-bot-setup-public/.env`](INSTALL_GUIDE.zh-TW.md#step-4-config) 填自己帳號申請的 `TG_API_ID`／`TG_API_HASH`，並完成您自己的 Telegram 帳號登入驗證。 |
 
 ## 使用情境：依任務分開建立 Bot
 
@@ -35,12 +35,12 @@ PDF 處理與圖片 OCR 是可自行串接的一般應用情境。公開專案�
 
 | 步驟 | 要做什麼 |
 | --- | --- |
-| 1. [申請本人 API](INSTALL_GUIDE.zh-TW.md#step-1-api) | 先有已註冊的 Telegram 帳號；用**手機或電腦瀏覽器**進入 [my.telegram.org/apps](https://my.telegram.org/apps) 的 **API development tools**。同一次申請取得 `API_ID` 與 `API_HASH`，無須 Telegram Desktop；網頁登入碼會傳到 Telegram App。可先做第 2、3 步，再回來申請與填寫。 |
+| 1. [申請自己帳號的 API 資料](INSTALL_GUIDE.zh-TW.md#step-1-api) | 先有已註冊的 Telegram 帳號；用**手機或電腦瀏覽器**進入 [my.telegram.org/apps](https://my.telegram.org/apps) 的 **API development tools**。同一次申請取得 `API_ID` 與 `API_HASH`，無須 Telegram Desktop；網頁登入碼會傳到 Telegram App。可先做第 2、3 步，再回來申請與填寫。 |
 | 2. [下載專案](INSTALL_GUIDE.zh-TW.md#step-2-download) | 在 Linux 取得本專案 `telegram-bot-setup-public`。 |
 | 3. [安裝相依](INSTALL_GUIDE.zh-TW.md#step-3-install) | 在專案目錄執行 `./tg-install`；互動終端會先選介面語言，安裝本身不操作 Telegram。 |
 | 4. [填入私有設定](INSTALL_GUIDE.zh-TW.md#step-4-config) | 在 `telegram-bot-setup-public/.env` 填 `TG_API_ID`、`TG_API_HASH`、`TG_PHONE`、自訂 Bot 顯示名 `My Personal Notice`、唯一 username（範例：`my_personal_notice_bot`）及路由 `PERSONAL`；顯示名可重複，此檔須受保護，不需既有 Chat ID。 |
-| 5. [完成初始化](INSTALL_GUIDE.zh-TW.md#step-5-setup) | 執行 `./tg-setup`；依提示完成必要的本人 OTP／2FA 隱藏輸入。若 BotFather 明確拒絕 username 已占用或不可用，互動模式會提供已查核的建議，讓你確認採用、自行改名或取消；不會擅自換名。之後建立或恢復 Bot、啟動對話及發首次測試通知。 |
-| 6. [確認完成](INSTALL_GUIDE.zh-TW.md#step-6-check) | 依指引確認狀態為 `completed`；新 Bot Token 由程式寫入 `telegram-bot-setup-public/.env` 的 `TG_CUSTOM_PERSONAL_TOKEN`，本人 Chat ID 寫入 `TG_CUSTOM_PERSONAL_CHAT_ID`，畫面不顯示 Token；相鄰的路由對照檔只存鍵名對應。不要將 Token 回填成 `TG_API_HASH`，正常建 Bot 也不用填 `TG_SETUP_BOT_TOKEN`。中斷或結果不明時依安裝指南恢復。 |
+| 5. [完成初始化](INSTALL_GUIDE.zh-TW.md#step-5-setup) | 執行 `./tg-setup`；依提示在終端隱藏輸入您自己 Telegram 帳號所需的 OTP／2FA。若 BotFather 明確拒絕 username 已占用或不可用，互動模式會提供已查核的建議，讓你確認採用、自行改名或取消；不會擅自換名。之後建立或恢復 Bot、啟動對話及發首次測試通知。 |
+| 6. [確認完成](INSTALL_GUIDE.zh-TW.md#step-6-check) | 依指引確認狀態為 `completed`；新 Bot Token 由程式寫入 `telegram-bot-setup-public/.env` 的 `TG_CUSTOM_PERSONAL_TOKEN`，您的 Chat ID 寫入 `TG_CUSTOM_PERSONAL_CHAT_ID`，畫面不顯示 Token；相鄰的路由對照檔只存鍵名對應。不要將 Token 回填成 `TG_API_HASH`，正常建 Bot 也不用填 `TG_SETUP_BOT_TOKEN`。中斷或結果不明時依安裝指南恢復。 |
 | 7. [送出第一則自訂通知](INSTALL_GUIDE.zh-TW.md#step-7-notify) | 初始化已發一則測試通知；現在執行 `./tg-message '我的第一則通知' PERSONAL NONE`，另發一則自訂通知。 |
 
 官方 API 申請流程見 [Telegram 申請說明](https://core.telegram.org/api/obtaining_api_id)。
@@ -49,7 +49,7 @@ PDF 處理與圖片 OCR 是可自行串接的一般應用情境。公開專案�
 
 | 入口 | 實際用途 |
 | --- | --- |
-| `tg-install`／`tg-setup` | 安裝相依；明確初始化本人帳號、建立或恢復私人通知 Bot、註冊路由並測試通知。 |
+| `tg-install`／`tg-setup` | 安裝相依；驗證您自己的 Telegram 帳號登入、建立或恢復私人通知 Bot、註冊路由並測試通知。 |
 | `tg_notify.py`（Python）／`tg-message`（文字 CLI） | Python 提供文字與圖片通知；CLI 提供文字通知。 |
 | `sys_notify.py` | 系統通知，預設純文字。 |
 | `tg`、`tg_cli.py` | 帳號狀態、對話、歷史、近期訊息、媒體下載及 Bot 新收件。 |
@@ -92,7 +92,7 @@ BotFather 工具提供 `request-login-code`、`complete-login`、`create-bot`、
 
 主帳號工具預設設定為本倉庫 `.env`，Session、登入狀態、Bot 更新 offset 與 Token 輪換紀錄在 `~/.local/state/telegram-bot-setup`。`TG_CONFIG_STATE_DIR` 可覆寫此狀態根目錄，包含 `tg-cli-bot-updates.json` 與 `token_rotation/`、`receiver/` 子目錄；各工具仍可依介面使用 `--env-path`、`--session-path`、`--login-state-path`、`--state-dir` 覆寫。舊版使用者可把本倉庫 `.state` 的內容複製到新位置，或設定 `TG_CONFIG_STATE_DIR` 指回舊目錄。設定、Session、offset 及 Token 輪換對照均不可提交。已登入帳號可用 `tg history me --limit 1` 讀 Saved Messages 最後一筆。
 
-舊帳號及 provision 入口將本人 Session 目錄收緊至 0700、Session 與 SQLite 附屬檔至 0600，不安全路徑或權限失敗會停止操作；請使用專用目錄。CLI 診斷遮蔽當次憑證。user-session 發送須有含正整數 ID 的訊息物件，缺回執非零退出、不印 `MESSAGE_SENT` 且不自動重送；設定更新一致處理全部同名鍵並維持原子 0600 寫入。收件下載遇永久 4xx 拒絕（429 除外）或累計 20 次暫時失敗（約 70 分鐘退避）即停止，HTTP 拒絕優先於矛盾 JSON，既有 queue DB 可繼續用；詳見[收件指南](docs/RECEIVING.md)。
+舊帳號及 provision 入口將所用帳號的 Session 目錄收緊至 0700、Session 與 SQLite 附屬檔至 0600，不安全路徑或權限失敗會停止操作；請使用專用目錄。CLI 診斷遮蔽當次憑證。user-session 發送須有含正整數 ID 的訊息物件，缺回執非零退出、不印 `MESSAGE_SENT` 且不自動重送；設定更新一致處理全部同名鍵並維持原子 0600 寫入。收件下載遇永久 4xx 拒絕（429 除外）或累計 20 次暫時失敗（約 70 分鐘退避）即停止，HTTP 拒絕優先於矛盾 JSON，既有 queue DB 可繼續用；詳見[收件指南](docs/RECEIVING.md)。
 
 ## 圖片與 PDF 收件
 
